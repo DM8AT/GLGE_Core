@@ -1,2 +1,4 @@
 # ignore build stuff
 build*
+# ignore vs code settings
+.vscode

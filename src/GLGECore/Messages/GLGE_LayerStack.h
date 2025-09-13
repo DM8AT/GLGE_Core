@@ -22,11 +22,40 @@
 //check for C++ to create a class
 #if __cplusplus
 
+//include std::vectors to simplify construction
+#include <vector>
+
 class LayerStack
 {
 public:
 
+    /**
+     * @brief Construct a new Layer Stack
+     * 
+     * The layer stack will be empty
+     */
     LayerStack() = default;
+
+    /**
+     * @brief Construct a new Layer Stack
+     * 
+     * @param layers a constant reference to an std::vector containing all the C++ layers for the layer stack
+     */
+    LayerStack(const std::vector<CppLayer*>& layers);
+
+    /**
+     * @brief Construct a new Layer Stack
+     * 
+     * @param layers a constant reference to an std::vector containing all the C layers for the layer stack
+     */
+    LayerStack(const std::vector<Layer>& layers);
+
+    /**
+     * @brief Construct a new Layer Stack
+     * 
+     * @param layers a constant reference to an std::vector containing all the C / C++ layers for the layer stack
+     */
+    LayerStack(const std::vector<CompatLayer>& layers);
 
 protected:
 

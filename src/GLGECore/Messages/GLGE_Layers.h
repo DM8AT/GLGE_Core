@@ -60,8 +60,10 @@ typedef struct s_Layer {
 
 //also, create a unified version of the Layer and CppLayer structure
 struct CompatLayer {
+    //store if a C++ layer is stored
     bool isCpp = false;
 
+    //store eather a C++ or a C layer
     union {
         //store the C layer
         Layer c_layer;

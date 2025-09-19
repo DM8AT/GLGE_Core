@@ -23,6 +23,12 @@ set(GLGE_CORE_SRC
 # create the library
 add_library(GLGE_CORE ${GLGE_CORE_SRC})
 
+# Apply to all targets in the project
+if(MSVC)
+    # Use dynamic runtime: /MD (Release), /MDd (Debug)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+endif()
+
 # use C++ 20
 set_target_properties(GLGE_CORE PROPERTIES 
                         CXX_STANDARD 20 

@@ -1,5 +1,5 @@
 # set the minimum required version
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 # store the version of the core library
 set(GLGE_CORE_VERSION 0.1.0)

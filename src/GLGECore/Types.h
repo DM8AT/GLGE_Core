@@ -20,6 +20,9 @@
 //define a type for a single byte
 typedef uint8_t byte;
 
+//define atype wrapper for an unsigned int
+typedef unsigned int uint;
+
 //define a type wrapper for a long int
 typedef long int lint;
 

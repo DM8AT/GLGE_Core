@@ -1,33 +1,21 @@
 #include <iostream>
 #include "GLGECore/GLGECore.h"
 
-void func() 
+#include <thread>
+#include <unordered_map>
+#include <string>
+
+
+void handle(const Event* ev, void*)
 {
-    printf("Hi\n");
+    std::cout << ev->type.library << "\n";
 }
 
 int main()
 {
-    Message msg = {
-        .identifier = {
-            .number = 1,
-        },
-        .contents = { 0 },
-        .callback = {
-            .identifier = GLGE_MSG_CALLBACK_FUNC_RET_VOID_INP_VOID,
-            .func = {
-                .func_retVoid_inpVoid = func
-            }
-        }
-    };
+    EventHandler handler(handle, NULL);
+    handler.sendEvent(Event("Hello", 0));
+    handler.sendEvent(Event("Test", 0));
 
-    MessageListener listener;
-    listener.sendMessage(msg);
-    listener.sendMessage(msg);
-
-    Message message;
-    if (!listener.pull(&message)) {return 1;}
-    (*message.callback.func.func_retVoid_inpVoid)();
-    if (!listener.peek(&message)) {return 0;}
-    return 2;
+    handler.handleEvents();
 }

@@ -91,6 +91,16 @@ public:
      */
     inline const Message& operator[](size_t i) const noexcept {return getMessage(i);}
 
+    /**
+     * @brief call the callback function of a message
+     * 
+     * @param msg a reference to the message to get the callback function from
+     * @param ret a pointer to a return value. Can be NULL if the function will return void, else it is assumed to be of the correct type
+     * @return true : successfully ran the function
+     * @return false : something went wrong. The function was not called. 
+     */
+    static bool callMessageCallback(Message& msg, void* ret) noexcept;
+
 protected:
 
     /**

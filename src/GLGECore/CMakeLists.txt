@@ -9,6 +9,8 @@ project(GLGE_CORE_PROJ LANGUAGES CXX)
 
 # for releases use optimizations
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+# for debug use all warnings
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall")
 
 # if no build type is set, select release
 if(NOT CMAKE_BUILD_TYPE)
@@ -18,6 +20,7 @@ endif()
 # store all files for the core
 set(GLGE_CORE_SRC 
     Messages/MessageListener.cpp
+    Events/EventHandler.cpp
 )
 
 # create the library

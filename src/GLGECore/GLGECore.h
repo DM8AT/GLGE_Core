@@ -15,5 +15,7 @@
 
 //include the messaging part
 #include "Messages/Messages.h"
+//include the event system
+#include "Events/Events.h"
 
 #endif

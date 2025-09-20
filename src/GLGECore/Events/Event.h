@@ -144,8 +144,28 @@ typedef struct s_Event {
      : type(_type), data(_data)
     {}
 
+    /**
+     * @brief check if two events are of the same type
+     * 
+     * @param e a constant reference to the event to compare with
+     * @return true : the events are of the same type
+     * @return false : the events are of different types
+     */
+    inline bool operator==(const s_Event& e) const noexcept 
+    {return (!strcmp(type.library, e.type.library)) && (type.event == e.type.event);}
+
     #endif
 
 } Event;
+
+/**
+ * @brief compare if two events are of the same type
+ * 
+ * @param first the first event to compare
+ * @param second the event to compare the type with the first one
+ * @return true : both events are of the same type
+ * @return false : the events are not of the same type
+ */
+bool event_Compare(const Event first, const Event second);
 
 #endif

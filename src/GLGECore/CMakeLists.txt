@@ -21,6 +21,7 @@ endif()
 set(GLGE_CORE_SRC 
     Messages/MessageListener.cpp
     Events/EventHandler.cpp
+    Events/Event.cpp
 )
 
 # create the library

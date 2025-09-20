@@ -117,6 +117,80 @@ protected:
 
 };
 
+#else //for C add an opaque structure
+
+/**
+ * @brief store an event handler
+ * 
+ * @warning do only use as a pointer, NEVER de-reference the structure
+ */
+typedef struct s_EventHandler {byte unused;} EventHandler;
+
 #endif
+
+/**
+ * @brief create a new event handler
+ * 
+ * @param func the function to handle the events with
+ * @param userData some arbitrary user data
+ * @param deferEvents true : the events will first be queued, then handled | false : the events will be handled instantly
+ * @return EventHandler* a pointer to the new event handler
+ */
+EventHandler* eventHandler_Create(void (*func)(const Event*, void*), void* userData, bool deferEvents);
+
+/**
+ * @brief delete an event handler
+ * 
+ * @param eh a pointer to the event handler to delete
+ */
+void eventHandler_Delete(EventHandler* eh);
+
+/**
+ * @brief send an event to an event handler
+ * 
+ * @param event the event to send to the event handler
+ * @param eh a pointer to the event handler to send the message to
+ */
+void eventHandler_sendEvent(Event event, EventHandler* eh);
+
+/**
+ * @brief queue an event and force it to be handled in a deferred manner
+ * 
+ * @param event the event to queue
+ * @param eh a pointer to an event handler to send the event to
+ */
+void eventHandler_SendEventDeferred(Event event, EventHandler* eh);
+
+/**
+ * @brief send an event to the event handler that requires instant handling
+ * 
+ * @param event the event to handle
+ * @param eh a pointer to an event handler to send the event to
+ */
+void eventHandler_sendEventInstant(Event event, EventHandler* eh);
+
+/**
+ * @brief handle all currently queued events
+ * 
+ * @param eh a pointer to the event handler to handle all events from
+ */
+void eventHandler_handleEvents(EventHandler* eh);
+
+/**
+ * @brief Set if events should happen deferred or instantly by default
+ * 
+ * @param deferEvents true : events will be first queued | false : events will be handled instantly
+ * @param eh a pointer to the event handler to set if it should defer events
+ */
+void eventHandler_setDeferEvents(bool deferEvents, EventHandler* eh);
+
+/**
+ * @brief Get if events are handled instant or deferred by default
+ * 
+ * @param eh a pointer to the event handler to quarry the data from
+ * @return true : events are handled in a deferred manner by default | 
+ * @return false : events are handled instantly by default
+ */
+bool eventHandler_getDeferEvents(EventHandler* eh);
 
 #endif

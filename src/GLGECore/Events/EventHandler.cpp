@@ -42,3 +42,27 @@ void EventHandler::handleEvents() noexcept
     //finished -> free the event queue
     m_mut.unlock();
 }
+
+EventHandler* eventHandler_Create(void (*func)(const Event*, void*), void* userData, bool deferEvents) 
+{return new EventHandler(func, userData, deferEvents);}
+
+void eventHandler_Delete(EventHandler* eh)
+{delete eh;}
+
+void eventHandler_sendEvent(Event event, EventHandler* eh)
+{eh->sendEvent(event);}
+
+void eventHandler_SendEventDeferred(Event event, EventHandler* eh)
+{eh->sendEventDeferred(event);}
+
+void eventHandler_sendEventInstant(Event event, EventHandler* eh)
+{eh->sendEventInstant(event);}
+
+void eventHandler_handleEvents(EventHandler* eh)
+{eh->handleEvents();}
+
+void eventHandler_setDeferEvents(bool deferEvents, EventHandler* eh)
+{eh->setDeferEvents(deferEvents);}
+
+bool eventHandler_getDeferEvents(EventHandler* eh)
+{return eh->getDeferEvents();}

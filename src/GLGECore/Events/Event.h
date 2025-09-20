@@ -80,7 +80,6 @@ typedef union u_EventData {
      * @param _inPlace the data to store in place
      */
     u_EventData(uint8_t size, byte* _inPlace)
-     : inPlace({0}) 
     {memcpy(inPlace, _inPlace, size);}
 
     #endif

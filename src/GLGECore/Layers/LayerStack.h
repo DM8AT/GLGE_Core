@@ -216,6 +216,13 @@ public:
      */
     bool removeLayer(const char* library, const char* name);
 
+    /**
+     * @brief send an event to all layers that can receive events
+     * 
+     * @param event a constant reference to the event to send
+     */
+    void sendEvent(const Event& event);
+
 protected:
 
     /**

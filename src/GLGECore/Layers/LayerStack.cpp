@@ -336,6 +336,28 @@ bool LayerStack::removeLayer(const char* library, const char* name)
     return removeLayer(idx);
 }
 
+void LayerStack::sendEvent(const Event& event)
+{
+    //iterate over all layers
+    uint64_t size = m_layers.byteSize / m_layers.elementSize;
+    for (uint64_t i = 0; i < size; ++i)
+    {
+        //get the element
+        LayerStackElement& el = *(((LayerStackElement*)m_layers.ptr) + i);
+        //switch between the type of layer
+        if (el.isLayerBase)
+        {
+            //only send the event if the function is set
+            if (((LayerBase*)el.layer)->getEventHandler().getHandleFunction())
+            {((LayerBase*)el.layer)->getEventHandler().sendEvent(event);}
+        }
+    }
+}
+
+
+
+
+
 LayerStack* layerStack_CreateFromLayers(Layer** layers, uint64_t layerCount) {
     //map the inputted data to an std::vector
     std::vector<Layer*> tmp(layerCount);

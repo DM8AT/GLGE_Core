@@ -42,7 +42,7 @@ public:
      */
     EventHandler(void (*func)(const Event*, void*), void* userData, bool deferEvents = false) noexcept
      : m_eventHandleFunc(func), m_deferEvents(deferEvents) , m_userData(userData)
-    {GLGE_ASSERT("Can't create a message handler with a callback function of NULL", !func);}
+    {}
 
     /**
      * @brief send an event to the envent handler
@@ -67,7 +67,7 @@ public:
      * 
      * @param event a constant reference to the event to handle
      */
-    void sendEventInstant(const Event& event) noexcept {(*m_eventHandleFunc)(&event, m_userData);}
+    void sendEventInstant(const Event& event) noexcept {if (m_eventHandleFunc) {(*m_eventHandleFunc)(&event, m_userData);}}
 
     /**
      * @brief handle all currently queued events
@@ -88,6 +88,11 @@ public:
      * @return false : events are handled instantly by default
      */
     inline bool getDeferEvents() const noexcept {return m_deferEvents;}
+
+    /**
+     * @brief Get the function that handles the event
+     */
+    inline void (*getHandleFunction() const noexcept)(const Event*, void*) {return m_eventHandleFunc;}
 
 protected:
 

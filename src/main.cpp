@@ -6,7 +6,7 @@ class LayerClass : public LayerBase
 public:
 
     LayerClass(const String& _name)
-     : LayerBase("Main", "Test"), name(_name)
+     : LayerBase("Main", "Test", onEvent), name(_name)
     {}
 
     virtual void onSetup() override
@@ -19,6 +19,9 @@ public:
     {std::cout << name << " : Shutdown\n";}
 
 protected:
+
+    static void onEvent(const Event* ev, void*)
+    {std::cout << "Received an event\n    Library: " << ev->type.library << "\n    Event Type: " << ev->type.event << "\n";}
 
     String name;
 
@@ -47,4 +50,6 @@ int main()
     stack.update();
     stack.removeLayer("Main", "Second Test");
     stack.update();
+
+    stack.sendEvent(Event("Main", 0));
 }

@@ -28,13 +28,27 @@ public:
 
     /**
      * @brief Construct a new Layer Base
+     * 
+     * @param type the type of the layer to create
+     * @param func an optional callback function for a function to handle events
+     * @param userData optional user data that would be passed to the event handling function
+     * @param deferEvents if events can be handled, say if events should be handled immediately or at a later point in time
      */
-    LayerBase(const LayerType& _type)
-     : m_type(_type)
+    LayerBase(const LayerType& _type, void (*func)(const Event*, void*) = NULL, void* userData = NULL, bool deferEvents = false)
+     : m_type(_type), m_handler(func, userData, deferEvents)
     {}
 
-    LayerBase(const char* library, const char* name)
-     : m_type(library, name)
+    /**
+     * @brief Construct a new Layer Base
+     * 
+     * @param library the name of the library the layer belongs to
+     * @param name tha name of the layer
+     * @param func an optional callback function for a function to handle events
+     * @param userData optional user data that would be passed to the event handling function
+     * @param deferEvents if events can be handled, say if events should be handled immediately or at a later point in time
+     */
+    LayerBase(const char* library, const char* name, void (*func)(const Event*, void*) = NULL, void* userData = NULL, bool deferEvents = false)
+     : m_type(library, name), m_handler(func, userData, deferEvents)
     {}
 
     /**
@@ -64,12 +78,24 @@ public:
      */
     inline const LayerType& getType() const noexcept {return m_type;}
 
+    /**
+     * @brief Get the Event Handler contained by the layer
+     * 
+     * @return const EventHandler& a constant reference to the encapsulated handler
+     */
+    inline EventHandler& getEventHandler() noexcept {return m_handler;}
+
 protected:
 
     /**
      * @brief store the type of layer
      */
     LayerType m_type;
+
+    /**
+     * @brief store an event handler
+     */
+    EventHandler m_handler = EventHandler(NULL, NULL);
 
 };
 

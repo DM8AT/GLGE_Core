@@ -8,7 +8,7 @@ set(GLGE_CORE_VERSION 0.1.0)
 project(GLGE_CORE_PROJ LANGUAGES CXX)
 
 # for releases use optimizations
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall")
 # for debug use all warnings
 set(CMAKE_CXX_FLAGS_DEBUG "-Wall")
 

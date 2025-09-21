@@ -229,6 +229,179 @@ protected:
 
 };
 
+#else //else, create a C binding
+
+/**
+ * @brief define an opaque structure to use as a layer stack
+ * 
+ * @warning do NOT de-reference the structure in any case, the byte is truly unused and just some junk for MSVC to compile the structure
+ */
+typedef struct s_LayerStack {byte unused;} LayerStack;
+
+#endif
+
+//start a C section for C++
+#if __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @brief create a new layer stack instance
+ * 
+ * @param layers a pointer to an array of pointers to the actual layers
+ * @param layerCount the amount of elements in the array
+ * @return LayerStack* a pointer to the new layer stack instance
+ */
+LayerStack* layerStack_CreateFromLayers(Layer** layers, uint64_t layerCount);
+
+/**
+ * @brief create a new layer stack instance
+ * 
+ * @param layers a pointer to an array of pointers to classes that inherit from the LayerBase class
+ * @param layerCount the amount of elements in the array
+ * @return LayerStack* a pointer to the new layer stack instance
+ */
+LayerStack* layerStack_CreateFromLayerBases(LayerBase** layers, uint64_t layerCount);
+
+/**
+ * @brief create a new layer stack instance
+ * 
+ * @param layers a pointer to an array of layer stack elements
+ * @param layerCount the amount of elements in the array
+ * @return LayerStack* a pointer to the new layer stack instance
+ */
+LayerStack* layerStack_CreateFromLayerStackElements(LayerStackElement* layers, uint64_t layerCount);
+
+/**
+ * @brief create a new layer stack instance
+ * 
+ * @warning the LayerStackElement and the pointers are differentiated by the size associated with the objects
+ * 
+ * @param layers a pointer to an vector that contains either Layer*, LayerBase* or LayerStackElements. 
+ * @param isLayerBase a boolean flag to indicate if the vector contains Layer* or LayerBase*. Is ignored if the vector contains LayerStackElements. 
+ * @return LayerStack* a pointer to the new layer stack instance
+ */
+LayerStack* layerStack_CreateFromVector(const Vector* layers, bool isLayerBase);
+
+/**
+ * @brief delete an instance of the layer stack class
+ * 
+ * @param ls a pointer to the layer stack class to delete
+ */
+void layerStack_Delete(LayerStack* ls);
+
+/**
+ * @brief a function to signal a startup to all layers
+ * 
+ * @param ls a pointer to the layer stack to execute the function on
+ */
+void layerStack_SignalStartup(LayerStack* ls);
+
+/**
+ * @brief a function to signal an update 
+ * 
+ * @param ls a pointer to the layer stack to execute the function on
+ */
+void layerStack_Update(LayerStack* ls);
+
+/**
+ * @brief a function to signal the shutdown of the application
+ * 
+ * @param ls a pointer to the layer stack to execute the function on
+ */
+void layerStack_SignalShutdown(LayerStack* ls);
+
+/**
+ * @brief Get the Element by a layer type
+ * 
+ * @param library the library the layer belongs to
+ * @param identifier the identifier of the layer
+ * @param ls a pointer to the layer stack to execute the function on
+ * @return const LayerStackElement* a constant pointer to the layer or NULL if it was not found
+ */
+const LayerStackElement* layerStack_GetElement(const char* library, const char* identifier, LayerStack* ls);
+
+/**
+ * @brief Get the Element by an index
+ * 
+ * @param index the index of the layer to quarry
+ * @param ls a pointer to the layer stack to execute the function on
+ * @return const LayerStackElement* a constant pointer to the layer or NULL if it was not found
+ */
+const LayerStackElement* layerStack_GetElementIndexed(size_t index, LayerStack* ls);
+
+/**
+ * @brief add a new layer to the layer stack
+ * 
+ * @warning to add the layer, the combination of library and name must be unique in the stack
+ * 
+ * @param layer a pointer to the layer to add
+ * @param ls a pointer to the layer stack to execute the function on
+ * @return true : the layer was added successfully
+ * @return false : failed to add the layer
+ */
+bool layerStack_AddNewLayer_Layer(Layer* layer, LayerStack* ls);
+
+/**
+ * @brief add a new layer to the layer stack
+ * 
+ * @warning to add the layer, the combination of library and name must be unique in the stack
+ * 
+ * @param layer a pointer to the new layer to add
+ * @param ls a pointer to the layer stack to execute the function on
+ * @return true : the layer was added successfully
+ * @return false : failed to add the layer
+ */
+bool layerStack_AddNewLayer_LayerBase(LayerBase* layer, LayerStack* ls);
+
+/**
+ * @brief add a new layer to the layer stack
+ * 
+ * @warning to add the layer, the combination of library and name must be unique in the stack
+ * 
+ * @param layer a constant reference to a layer stack element to add to the layer stack
+ * @param ls a pointer to the layer stack to execute the function on
+ * @return true : the layer was added successfully
+ * @return false : failed to add the layer
+ */
+bool layerStack_AddNewLayer_LayerStackElement(LayerStackElement lse, LayerStack* ls);
+
+/**
+ * @brief Get the index of a specific Layer 
+ * 
+ * @param library the name of the library to quarry the index for
+ * @param name the name of the layer to quarry the index for
+ * @param ls a pointer to the layer stack to execute the function on
+ * @return size_t the index or SIZE_MAX if it was not found
+ */
+size_t layerStack_GetLayerIndex(const char* library, const char* name, LayerStack* ls);
+
+/**
+ * @brief remove a layer using an index
+ * 
+ * @param index the index of the layer to remove
+ * @param ls a pointer to the layer stack to execute the function on
+ * 
+ * @return true : the layer was removed successfully
+ * @return false : failed to remove the layer
+ */
+bool layerStack_RemoveLayerIndexed(size_t index, LayerStack* ls);
+
+/**
+ * @brief remove a layer using a name
+ * 
+ * @param library the name of the library of the layer to remove
+ * @param name the name of the layer to 
+ * @param ls a pointer to the layer stack to execute the function on
+ * 
+ * @return true : the layer was removed successfully
+ * @return false : failed to remove the layer
+ */
+bool layerStack_RemoveLayer(const char* library, const char* name, LayerStack* ls);
+
+//end a C section for C++
+#if __cplusplus
+}
 #endif
 
 #endif

@@ -335,3 +335,61 @@ bool LayerStack::removeLayer(const char* library, const char* name)
     //remove the index
     return removeLayer(idx);
 }
+
+LayerStack* layerStack_CreateFromLayers(Layer** layers, uint64_t layerCount) {
+    //map the inputted data to an std::vector
+    std::vector<Layer*> tmp(layerCount);
+    memcpy(tmp.data(), layers, layerCount*sizeof(*layers));
+    //return the new layer stack
+    return new LayerStack(tmp);
+}
+
+LayerStack* layerStack_CreateFromLayerBases(LayerBase** layers, uint64_t layerCount) {
+    //map the inputted data to an std::vector
+    std::vector<Layer*> tmp(layerCount);
+    memcpy(tmp.data(), layers, layerCount*sizeof(*layers));
+    //return the new layer stack
+    return new LayerStack(tmp);
+}
+
+LayerStack* layerStack_CreateFromLayerStackElements(LayerStackElement* layers, uint64_t layerCount) {
+    //map the inputted data to an std::vector
+    std::vector<Layer*> tmp(layerCount);
+    memcpy(tmp.data(), layers, layerCount*sizeof(*layers));
+    //return the new layer stack
+    return new LayerStack(tmp);
+}
+
+LayerStack* layerStack_CreateFromVector(const Vector* layers, bool isLayerBase) {return new LayerStack(*layers, isLayerBase);}
+
+void layerStack_Delete(LayerStack* ls) {delete ls;}
+
+void layerStack_SignalStartup(LayerStack* ls) {ls->signalStartup();}
+
+void layerStack_Update(LayerStack* ls) {ls->update();}
+
+void layerStack_SignalShutdown(LayerStack* ls) {ls->signalShutdown();}
+
+const LayerStackElement* layerStack_GetElement(const char* library, const char* identifier, LayerStack* ls)
+{return ls->getElement(library, identifier);}
+
+const LayerStackElement* layerStack_GetElementIndexed(size_t index, LayerStack* ls)
+{return ls->getElement(index);}
+
+bool layerStack_AddNewLayer_Layer(Layer* layer, LayerStack* ls)
+{return ls->addNewLayer(layer);}
+
+bool layerStack_AddNewLayer_LayerBase(LayerBase* layer, LayerStack* ls)
+{return ls->addNewLayer(layer);}
+
+bool layerStack_AddNewLayer_LayerStackElement(LayerStackElement lse, LayerStack* ls)
+{return ls->addNewLayer(lse);}
+
+size_t layerStack_GetLayerIndex(const char* library, const char* name, LayerStack* ls)
+{return ls->getLayerIndex(library, name);}
+
+bool layerStack_RemoveLayerIndexed(size_t index, LayerStack* ls)
+{return ls->removeLayer(index);}
+
+bool layerStack_RemoveLayer(const char* library, const char* name, LayerStack* ls)
+{return ls->removeLayer(library, name);}

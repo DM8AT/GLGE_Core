@@ -20,8 +20,11 @@ endif()
 # store all files for the core
 set(GLGE_CORE_SRC 
     Messages/MessageListener.cpp
+    
     Events/EventHandler.cpp
     Events/Event.cpp
+
+    Layers/LayerStack.cpp
 )
 
 # create the library
@@ -39,3 +42,7 @@ set_target_properties(GLGE_CORE PROPERTIES
                         CXX_STANDARD_REQUIRED ON 
                         VERSION ${GLGE_CORE_VERSION} 
                         SOVERSION 1)
+
+# add the sub-libraries
+add_subdirectory(${PROJECT_SOURCE_DIR}/../GLGE_BG ${PROJECT_BINARY_DIR}/../GLGE_BG)
+target_link_libraries(GLGE_CORE PUBLIC GLGE_BG)

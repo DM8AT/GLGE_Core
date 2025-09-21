@@ -1,21 +1,50 @@
 #include <iostream>
 #include "GLGECore/GLGECore.h"
 
-#include <thread>
-#include <unordered_map>
-#include <string>
-
-
-void handle(const Event* ev, void*)
+class LayerClass : public LayerBase
 {
-    std::cout << ev->type.library << "\n";
+public:
+
+    LayerClass(const String& _name)
+     : LayerBase("Main", "Test"), name(_name)
+    {}
+
+    virtual void onSetup() override
+    {std::cout << name << " : Setup\n";}
+
+    virtual void onUpdate() override
+    {std::cout << name << " : Update\n";}
+
+    virtual void onShutdown() override
+    {std::cout << name << " : Shutdown\n";}
+
+protected:
+
+    String name;
+
+};
+
+void stackFunc_update()
+{
+    std::cout << "Updated\n";
 }
 
 int main()
 {
-    EventHandler handler(handle, NULL);
-    handler.sendEvent(Event("Hello", 0));
-    handler.sendEvent(Event("Test", 0));
+    LayerStack stack({
+        LayerStackElement(new Layer(
+            "Main", "Second Test", {
+                .next = NULL,
+                .func_updateCallback = stackFunc_update,
+                .func_startupCallback = NULL,
+                .func_shutdownCallback = NULL
+            }
+        )),
+        LayerStackElement(new LayerClass("Hello"))
+    });
+    stack.signalStartup();
 
-    handler.handleEvents();
+    stack.update();
+    stack.removeLayer("Main", "Second Test");
+    stack.update();
 }

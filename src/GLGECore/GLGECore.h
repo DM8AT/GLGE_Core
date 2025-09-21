@@ -17,5 +17,7 @@
 #include "Messages/Messages.h"
 //include the event system
 #include "Events/Events.h"
+//include the layer system
+#include "Layers/Layers.h"
 
 #endif

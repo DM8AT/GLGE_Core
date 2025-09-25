@@ -29,12 +29,14 @@ protected:
 
 void stackFunc_update()
 {
+    App::getApp()->stop();
     std::cout << "Updated\n";
 }
 
 int main()
 {
-    LayerStack stack({
+    App app("TestApp");
+    app.getLayerStack().addNewLayer(
         LayerStackElement(new Layer(
             "Main", "Second Test", {
                 .next = NULL,
@@ -42,14 +44,8 @@ int main()
                 .func_startupCallback = NULL,
                 .func_shutdownCallback = NULL
             }
-        )),
-        LayerStackElement(new LayerClass("Hello"))
-    });
-    stack.signalStartup();
+        )));
+    app.getLayerStack().addNewLayer(new LayerClass("Hello"));
 
-    stack.update();
-    stack.removeLayer("Main", "Second Test");
-    stack.update();
-
-    stack.sendEvent(Event("Main", 0));
+    app.run();
 }

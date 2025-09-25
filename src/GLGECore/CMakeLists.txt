@@ -10,11 +10,11 @@ project(GLGE_CORE_PROJ LANGUAGES CXX)
 # for releases use optimizations
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall")
 # for debug use all warnings
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
 
 # if no build type is set, select release
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 # store all files for the core
@@ -25,6 +25,10 @@ set(GLGE_CORE_SRC
     Events/Event.cpp
 
     Layers/LayerStack.cpp
+
+    Application/App.cpp
+
+    Setting/Settings.cpp
 )
 
 # create the library
@@ -44,5 +48,10 @@ set_target_properties(GLGE_CORE PROPERTIES
                         SOVERSION 1)
 
 # add the sub-libraries
+## GLGE_BG
 add_subdirectory(${PROJECT_SOURCE_DIR}/../GLGE_BG ${PROJECT_BINARY_DIR}/../GLGE_BG)
 target_link_libraries(GLGE_CORE PUBLIC GLGE_BG)
+## PugiXML
+add_subdirectory(${PROJECT_SOURCE_DIR}/../external/pugixml ${PROJECT_BINARY_DIR}/../external/pugixml)
+target_link_libraries(GLGE_CORE PRIVATE pugixml)
+target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/pugixml/src)

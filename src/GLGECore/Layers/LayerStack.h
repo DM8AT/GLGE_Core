@@ -108,6 +108,18 @@ public:
     LayerStack(const Vector& layers, bool isLayerBase);
 
     /**
+     * @brief Construct a new Layer Stack
+     * 
+     * @warning explicitly deleted
+     */
+    LayerStack(LayerStack&) = delete;
+
+    /**
+     * @brief explicitly deleted
+     */
+    void operator=(const LayerStack&) = delete;
+
+    /**
      * @brief Destroy the Layer Stack
      */
     ~LayerStack();
@@ -222,6 +234,13 @@ public:
      * @param event a constant reference to the event to send
      */
     void sendEvent(const Event& event);
+
+    /**
+     * @brief Get the amount of existing layers
+     * 
+     * @return uint64_t the amount of layers in the stack
+     */
+    inline uint64_t getLayerCount() const noexcept {return m_layers.byteSize/m_layers.elementSize;}
 
 protected:
 

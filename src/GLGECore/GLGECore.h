@@ -19,5 +19,7 @@
 #include "Events/Events.h"
 //include the layer system
 #include "Layers/Layers.h"
+//include the application system
+#include "Application/Application.h"
 
 #endif

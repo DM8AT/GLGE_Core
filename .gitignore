@@ -2,3 +2,5 @@
 build*
 # ignore vs code settings
 .vscode
+# ignore GLGE app files
+*.gapp

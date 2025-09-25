@@ -35,17 +35,17 @@ void stackFunc_update()
 
 int main()
 {
-    App app("TestApp");
-    app.getLayerStack().addNewLayer(
-        LayerStackElement(new Layer(
+    App app({
+        new Layer(
             "Main", "Second Test", {
                 .next = NULL,
                 .func_updateCallback = stackFunc_update,
                 .func_startupCallback = NULL,
                 .func_shutdownCallback = NULL
             }
-        )));
-    app.getLayerStack().addNewLayer(new LayerClass("Hello"));
+        ),
+        new LayerClass("Hello")
+    }, "TestApp");
 
     app.run();
 }

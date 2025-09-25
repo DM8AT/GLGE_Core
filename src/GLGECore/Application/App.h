@@ -103,6 +103,63 @@ public:
     {initialize();}
 
     /**
+     * @brief Construct a new App
+     * 
+     * @param layers a vector of layers to create the layer stack from
+     * @param name the name of the application
+     * @param settingsPath store a path to the settings file for the application
+     * @param version the version of the application
+     * @param compatibility define to which versions the app is compatable
+     * @param debug a flag controlling if the application should start in debug or release mode
+     */
+    inline App(const std::vector<Layer*>& layers, String name, String settingsPath = "", const AppVersion& version = {.major = 1,.minor = 0,.patch = 0}, uint8_t compatibility = APP_COMPATIBILITY_NONE, bool debug = false)
+     : m_info({name, settingsPath, version, compatibility, debug}), m_layers(layers)
+    {initialize();}
+
+    /**
+     * @brief Construct a new App
+     * 
+     * @param layers a vector of layers to create the layer stack from
+     * @param name the name of the application
+     * @param settingsPath store a path to the settings file for the application
+     * @param version the version of the application
+     * @param compatibility define to which versions the app is compatable
+     * @param debug a flag controlling if the application should start in debug or release mode
+     */
+    inline App(const std::vector<LayerBase*>& layers, String name, String settingsPath = "", const AppVersion& version = {.major = 1,.minor = 0,.patch = 0}, uint8_t compatibility = APP_COMPATIBILITY_NONE, bool debug = false)
+     : m_info({name, settingsPath, version, compatibility, debug}), m_layers(layers)
+    {initialize();}
+
+    /**
+     * @brief Construct a new App
+     * 
+     * @param layers a vector of layers to create the layer stack from
+     * @param name the name of the application
+     * @param settingsPath store a path to the settings file for the application
+     * @param version the version of the application
+     * @param compatibility define to which versions the app is compatable
+     * @param debug a flag controlling if the application should start in debug or release mode
+     */
+    inline App(const std::vector<LayerStackElement>& layers, String name, String settingsPath = "", const AppVersion& version = {.major = 1,.minor = 0,.patch = 0}, uint8_t compatibility = APP_COMPATIBILITY_NONE, bool debug = false)
+     : m_info({name, settingsPath, version, compatibility, debug}), m_layers(layers)
+    {initialize();}
+
+    /**
+     * @brief Construct a new App
+     * 
+     * @param layers a vector of layers to create the layer stack from
+     * @param isLayerBase say if the vector contains layers or layer bases
+     * @param name the name of the application
+     * @param settingsPath store a path to the settings file for the application
+     * @param version the version of the application
+     * @param compatibility define to which versions the app is compatable
+     * @param debug a flag controlling if the application should start in debug or release mode
+     */
+    inline App(const Vector& layers, bool isLayerBase, String name, String settingsPath = "", const AppVersion& version = {.major = 1,.minor = 0,.patch = 0}, uint8_t compatibility = APP_COMPATIBILITY_NONE, bool debug = false)
+     : m_info({name, settingsPath, version, compatibility, debug}), m_layers(layers, isLayerBase)
+    {initialize();}
+
+    /**
      * @brief Get the Settings of the application
      * 
      * @return Settings& a reference to the settings of the application

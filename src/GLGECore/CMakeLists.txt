@@ -10,7 +10,7 @@ project(GLGE_CORE_PROJ LANGUAGES CXX)
 # for releases use optimizations
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall")
 # for debug use all warnings
-set(CMAKE_CXX_FLAGS_DEBUG "-g -std=c++20 -O0 -fms-extensions -Wall -Wextra -Wconversion -Wsign-conversion -Wshadow -Wdouble-promotion -Wformat=2 -Wnull-dereference -Wundef -Wcast-align -Wmissing-declarations -Wunreachable-code -Winit-self -Wlogical-op")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fms-extensions -Wall -Wextra -Wconversion -Wsign-conversion -Wshadow -Wdouble-promotion -Wformat=2 -Wnull-dereference -Wundef -Wcast-align -Wmissing-declarations -Wunreachable-code -Winit-self -Wlogical-op")
 
 # if no build type is set, select release
 if(NOT CMAKE_BUILD_TYPE)

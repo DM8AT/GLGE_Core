@@ -95,7 +95,7 @@ protected:
     /**
      * @brief store an event handler
      */
-    EventHandler m_handler = EventHandler(NULL, NULL);
+    EventHandler m_handler;
 
 };
 

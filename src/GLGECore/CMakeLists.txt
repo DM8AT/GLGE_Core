@@ -10,7 +10,7 @@ project(GLGE_CORE_PROJ LANGUAGES CXX)
 # for releases use optimizations
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall")
 # for debug use all warnings
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -std=c++20 -O0 -fms-extensions -Wall -Wextra -Wconversion -Wsign-conversion -Wshadow -Wdouble-promotion -Wformat=2 -Wnull-dereference -Wundef -Wcast-align -Wmissing-declarations -Wunreachable-code -Winit-self -Wlogical-op")
 
 # if no build type is set, select release
 if(NOT CMAKE_BUILD_TYPE)
@@ -42,8 +42,9 @@ endif()
 
 # use C++ 20
 set_target_properties(GLGE_CORE PROPERTIES 
-                        CXX_STANDARD 20 
-                        CXX_STANDARD_REQUIRED ON 
+                        CMAKE_CXX_STANDARD 20 
+                        CMAKE_CXX_STANDARD_REQUIRED ON 
+                        CMAKE_CXX_EXTENSIONS ON 
                         VERSION ${GLGE_CORE_VERSION} 
                         SOVERSION 1)
 
@@ -52,6 +53,9 @@ set_target_properties(GLGE_CORE PROPERTIES
 add_subdirectory(${PROJECT_SOURCE_DIR}/../GLGE_BG ${PROJECT_BINARY_DIR}/../GLGE_BG)
 target_link_libraries(GLGE_CORE PUBLIC GLGE_BG)
 ## PugiXML
+# disable debugging for PugiXML
+set(CMAKE_CXX_FLAGS_DEBUG "-O2")
+# include actual PugiXML
 add_subdirectory(${PROJECT_SOURCE_DIR}/../external/pugixml ${PROJECT_BINARY_DIR}/../external/pugixml)
 target_link_libraries(GLGE_CORE PRIVATE pugixml)
 target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/pugixml/src)

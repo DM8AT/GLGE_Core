@@ -51,7 +51,7 @@ static AppInfo __loadAppInfoFromFile(pugi::xml_document& doc)
             //store the value
             if (pugi::xml_attribute major_value = major.attribute("value")) {
                 //store the value
-                ret.version.major = atoi(major_value.value());
+                ret.version.major = (uint16_t)atoi(major_value.value());
             }
             else {
                 //warning
@@ -68,7 +68,7 @@ static AppInfo __loadAppInfoFromFile(pugi::xml_document& doc)
             //store the value
             if (pugi::xml_attribute minor_value = minor.attribute("value")) {
                 //store the value
-                ret.version.minor = atoi(minor_value.value());
+                ret.version.minor = (uint16_t)atoi(minor_value.value());
             }
             else {
                 //warning
@@ -85,7 +85,7 @@ static AppInfo __loadAppInfoFromFile(pugi::xml_document& doc)
             //store the value
             if (pugi::xml_attribute patch_value = patch.attribute("value")) {
                 //store the value
-                ret.version.patch = atoi(patch_value.value());
+                ret.version.patch = (uint16_t)atoi(patch_value.value());
             }
             else {
                 //warning

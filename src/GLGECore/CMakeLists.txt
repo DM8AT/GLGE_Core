@@ -38,6 +38,9 @@ add_library(GLGE_CORE ${GLGE_CORE_SRC})
 if(MSVC)
     # Use dynamic runtime: /MD (Release), /MDd (Debug)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+    target_compile_options(GLGE_CORE PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/w>
+    )
 endif()
 
 # use C++ 20

@@ -47,5 +47,17 @@ int main()
         new LayerClass("Hello")
     }, "TestApp");
 
+    Settings set;
+    // set.setSetting_String("String", "Hello World!");
+    // set.setSetting_Float("Lives", 0.4);
+    // set.setSetting_Vec2("Position", vec2(32.5, 44.12));
+    // set.saveToFile("settings.gsav");
+    set.loadFromFile("settings.gsav");
+
+    for (uint64_t i = 0; i < set.getSettingCount(); ++i)
+    {
+        std::cout << set.getSetting(i) << "\n";
+    }
+
     app.run();
 }

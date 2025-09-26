@@ -111,6 +111,41 @@ typedef union u_SettingValue {
          */
         template <typename T> void operator=(const T&) noexcept;
 
+        //check for PugiXML to add encode functionality
+        #if PUGIXML_VERSION
+
+        /**
+         * @brief serialize the union to a node for XML
+         * 
+         * @tparam type the type of the union to encode
+         * @param parent a reference to the parent node
+         * @param name the name of the element to store
+         */
+        template <SettingType type> void encode(pugi::xml_node& parent) const;
+
+        /**
+         * @brief decode the setting from an XML node
+         * 
+         * @param value a reference to the XML node to decode the value from
+         * @param type the integer identifier for the value's type
+         * @return SettingType the actual type of the setting
+         */
+        SettingType decode(pugi::xml_node& value, uint64_t type);
+
+    private:
+
+        /**
+         * @brief decode the setting with a specific type from a node
+         * 
+         * @tparam type the type of the setting to decode
+         * @param value a reference to the node to decode the value from
+         */
+        template <SettingType type> void __decodeType(pugi::xml_node& value);
+
+    public:
+
+        #endif //end of PugiXML only section
+
     #endif
 
 } SettingValue;
@@ -123,6 +158,34 @@ typedef struct s_Setting {
     SettingType type;
     //store the value of the setting
     SettingValue value;
+
+    //only implement some functions for C++
+    #if __cplusplus
+
+    /**
+     * @brief print the settings to an output stream
+     * 
+     * @param os the output stream to fill
+     * @param setting the settings to print
+     * @return std::ostream& the filled output stream
+     */
+    friend std::ostream& operator<<(std::ostream& os, const s_Setting& setting) noexcept;
+
+private:
+
+    /**
+     * @brief print this setting into an output stream
+     * 
+     * @tparam type the type of setting to print
+     * @param os the output stream to fill
+     * @return std::ostream& the filled output stream
+     */
+    template <SettingType type> std::ostream& printSelf(std::ostream& os) const;
+
+public:
+
+    #endif
+
 } Setting;
 
 /**
@@ -159,6 +222,45 @@ public:
      * @brief Destroy the Settings
      */
     ~Settings() {}
+
+    /**
+     * @brief store the settings to a file
+     * 
+     * @param file the path to store the settings to
+     */
+    void saveToFile(const char* file);
+
+    /**
+     * @brief load the settings from a file
+     * 
+     * The settings are stored in an element called "Settings"
+     * 
+     * @param file the name of the file to load from
+     */
+    void loadFromFile(const char* file);
+
+    /**
+     * @brief Get the amount of settings currently loaded
+     * 
+     * @return uint64_t the amount of loaded setting elements
+     */
+    inline uint64_t getSettingCount() const noexcept {return m_settings.size();}
+
+    /**
+     * @brief Get the Setting Name of a setting element at a specific index
+     * 
+     * @param index the index of the element to quarry
+     * @return const String& the name of the element
+     */
+    inline const String& getSettingName(uint64_t index) const noexcept {auto it = m_settings.begin(); std::advance(it, index); return it->first;}
+
+    /**
+     * @brief Get the Settings of a setting element at a specific value
+     * 
+     * @param index the index of the element to quarry
+     * @return const Setting& a constant reference to the element at that index
+     */
+    inline const Setting& getSetting(uint64_t index) const noexcept {auto it = m_settings.begin(); std::advance(it, index); return it->second;}
 
 /*
  $$$$$$\  $$$$$$$$\ $$$$$$$$\ $$$$$$$$\ $$$$$$\ $$\   $$\  $$$$$$\  

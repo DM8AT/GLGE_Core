@@ -9,8 +9,15 @@
  * 
  */
 
+//include pugixml for XML
+#include "../../external/pugixml/src/pugixml.hpp"
 //include the setting API
 #include "Settings.h"
+//include GLGE error handling
+#include "../../GLGE_BG/Debugging/Logging/__BG_SimpleDebug.h"
+
+//include the C++ filesystem
+#include <filesystem>
 
 //template implementations for the = operator
 //uint
@@ -44,6 +51,313 @@ template <> void SettingValue::operator=(const uivec4& v) noexcept {_uivec4 = v;
 template <> void SettingValue::operator=(const ivec2& v) noexcept {_ivec2 = v;}
 template <> void SettingValue::operator=(const ivec3& v) noexcept {_ivec3 = v;}
 template <> void SettingValue::operator=(const ivec4& v) noexcept {_ivec4 = v;}
+
+//encode function specialization
+//integer types
+template <> void SettingValue::encode<SETTING_TYPE_INT8>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_INT8);
+    node.append_attribute("value").set_value(_int8_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_UINT8>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UINT8);
+    node.append_attribute("value").set_value(_uint8_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_INT16>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_INT16);
+    node.append_attribute("value").set_value(_int16_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_UINT16>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UINT16);
+    node.append_attribute("value").set_value(_uint16_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_INT32>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_INT32);
+    node.append_attribute("value").set_value(_int32_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_UINT32>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UINT32);
+    node.append_attribute("value").set_value(_uint32_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_INT64>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_INT64);
+    node.append_attribute("value").set_value(_int64_t);
+}
+template <> void SettingValue::encode<SETTING_TYPE_UINT64>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UINT64);
+    node.append_attribute("value").set_value(_uint64_t);
+}
+//float types
+template <> void SettingValue::encode<SETTING_TYPE_FLOAT>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_FLOAT);
+    node.append_attribute("value").set_value(_float);
+}
+template <> void SettingValue::encode<SETTING_TYPE_DOUBLE>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_DOUBLE);
+    node.append_attribute("value").set_value(_double);
+}
+//string type
+template <> void SettingValue::encode<SETTING_TYPE_STRING>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_STRING);
+    node.append_attribute("value").set_value(_string.c_str());
+}
+//float vectors
+template <> void SettingValue::encode<SETTING_TYPE_VEC2>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_VEC2);
+    node.append_attribute("x").set_value(_vec2.x);
+    node.append_attribute("y").set_value(_vec2.y);
+}
+template <> void SettingValue::encode<SETTING_TYPE_VEC3>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_VEC3);
+    node.append_attribute("x").set_value(_vec3.x);
+    node.append_attribute("y").set_value(_vec3.y);
+    node.append_attribute("z").set_value(_vec3.z);
+}
+template <> void SettingValue::encode<SETTING_TYPE_VEC4>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_VEC4);
+    node.append_attribute("x").set_value(_vec4.x);
+    node.append_attribute("y").set_value(_vec4.y);
+    node.append_attribute("z").set_value(_vec4.z);
+    node.append_attribute("w").set_value(_vec4.w);
+}
+//double vectors
+template <> void SettingValue::encode<SETTING_TYPE_DVEC2>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_DVEC2);
+    node.append_attribute("x").set_value(_dvec2.x);
+    node.append_attribute("y").set_value(_dvec2.y);
+}
+template <> void SettingValue::encode<SETTING_TYPE_DVEC3>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_DVEC3);
+    node.append_attribute("x").set_value(_dvec3.x);
+    node.append_attribute("y").set_value(_dvec3.y);
+    node.append_attribute("z").set_value(_dvec3.z);
+}
+template <> void SettingValue::encode<SETTING_TYPE_DVEC4>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_DVEC4);
+    node.append_attribute("x").set_value(_dvec4.x);
+    node.append_attribute("y").set_value(_dvec4.y);
+    node.append_attribute("z").set_value(_dvec4.z);
+    node.append_attribute("w").set_value(_dvec4.w);
+}
+//uint32_t vectors
+template <> void SettingValue::encode<SETTING_TYPE_UIVEC2>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UIVEC2);
+    node.append_attribute("x").set_value(_uivec2.x);
+    node.append_attribute("y").set_value(_uivec2.y);
+}
+template <> void SettingValue::encode<SETTING_TYPE_UIVEC3>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UIVEC3);
+    node.append_attribute("x").set_value(_uivec3.x);
+    node.append_attribute("y").set_value(_uivec3.y);
+    node.append_attribute("z").set_value(_uivec3.z);
+}
+template <> void SettingValue::encode<SETTING_TYPE_UIVEC4>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_UIVEC4);
+    node.append_attribute("x").set_value(_uivec4.x);
+    node.append_attribute("y").set_value(_uivec4.y);
+    node.append_attribute("z").set_value(_uivec4.z);
+    node.append_attribute("w").set_value(_uivec4.w);
+}
+//int32_t vectors
+template <> void SettingValue::encode<SETTING_TYPE_IVEC2>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_IVEC2);
+    node.append_attribute("x").set_value(_ivec2.x);
+    node.append_attribute("y").set_value(_ivec2.y);
+}
+template <> void SettingValue::encode<SETTING_TYPE_IVEC3>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_IVEC3);
+    node.append_attribute("x").set_value(_ivec3.x);
+    node.append_attribute("y").set_value(_ivec3.y);
+    node.append_attribute("z").set_value(_ivec3.z);
+}
+template <> void SettingValue::encode<SETTING_TYPE_IVEC4>(pugi::xml_node& parent) const
+{
+    pugi::xml_node node = parent.append_child("Value");
+    node.append_attribute("type").set_value((uint64_t)SETTING_TYPE_IVEC4);
+    node.append_attribute("x").set_value(_ivec4.x);
+    node.append_attribute("y").set_value(_ivec4.y);
+    node.append_attribute("z").set_value(_ivec4.z);
+    node.append_attribute("w").set_value(_ivec4.w);
+}
+
+//decode implementations
+//integer types
+template <> void SettingValue::__decodeType<SETTING_TYPE_INT8>(pugi::xml_node& value)
+{_int8_t = (int8_t)value.attribute("value").as_int();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_UINT8>(pugi::xml_node& value)
+{_uint8_t = (uint8_t)value.attribute("value").as_uint();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_INT16>(pugi::xml_node& value)
+{_int16_t = (int16_t)value.attribute("value").as_int();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_UINT16>(pugi::xml_node& value)
+{_uint16_t = (uint16_t)value.attribute("value").as_uint();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_INT32>(pugi::xml_node& value)
+{_int32_t = (int32_t)value.attribute("value").as_int();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_UINT32>(pugi::xml_node& value)
+{_uint32_t = (uint32_t)value.attribute("value").as_uint();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_INT64>(pugi::xml_node& value)
+{_int64_t = (int64_t)value.attribute("value").as_llong();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_UINT64>(pugi::xml_node& value)
+{_uint64_t = (uint64_t)value.attribute("value").as_ullong();}
+//float types
+template <> void SettingValue::__decodeType<SETTING_TYPE_FLOAT>(pugi::xml_node& value)
+{_float = value.attribute("value").as_float();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_DOUBLE>(pugi::xml_node& value)
+{_double = value.attribute("value").as_double();}
+//string
+template <> void SettingValue::__decodeType<SETTING_TYPE_STRING>(pugi::xml_node& value)
+{_string = value.attribute("value").as_string();}
+//float vector
+template <> void SettingValue::__decodeType<SETTING_TYPE_VEC2>(pugi::xml_node& value)
+{_vec2.x = value.attribute("x").as_float();
+ _vec2.y = value.attribute("y").as_float();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_VEC3>(pugi::xml_node& value)
+{_vec3.x = value.attribute("x").as_float();
+ _vec3.y = value.attribute("y").as_float();
+ _vec3.z = value.attribute("z").as_float();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_VEC4>(pugi::xml_node& value)
+{_vec4.x = value.attribute("x").as_float();
+ _vec4.y = value.attribute("y").as_float();
+ _vec4.z = value.attribute("z").as_float();
+ _vec4.w = value.attribute("w").as_float();}
+//double vector
+template <> void SettingValue::__decodeType<SETTING_TYPE_DVEC2>(pugi::xml_node& value)
+{_dvec2.x = value.attribute("x").as_double();
+ _dvec2.y = value.attribute("y").as_double();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_DVEC3>(pugi::xml_node& value)
+{_dvec3.x = value.attribute("x").as_double();
+ _dvec3.y = value.attribute("y").as_double();
+ _dvec3.z = value.attribute("z").as_double();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_DVEC4>(pugi::xml_node& value)
+{_dvec4.x = value.attribute("x").as_double();
+ _dvec4.y = value.attribute("y").as_double();
+ _dvec4.z = value.attribute("z").as_double();
+ _dvec4.w = value.attribute("w").as_double();}
+//uint32_t vector
+template <> void SettingValue::__decodeType<SETTING_TYPE_UIVEC2>(pugi::xml_node& value)
+{_uivec2.x = value.attribute("x").as_uint();
+ _uivec2.y = value.attribute("y").as_uint();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_UIVEC3>(pugi::xml_node& value)
+{_uivec3.x = value.attribute("x").as_uint();
+ _uivec3.y = value.attribute("y").as_uint();
+ _uivec3.z = value.attribute("z").as_uint();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_UIVEC4>(pugi::xml_node& value)
+{_uivec4.x = value.attribute("x").as_uint();
+ _uivec4.y = value.attribute("y").as_uint();
+ _uivec4.z = value.attribute("z").as_uint();
+ _uivec4.w = value.attribute("w").as_uint();}
+//int32_t vector
+template <> void SettingValue::__decodeType<SETTING_TYPE_IVEC2>(pugi::xml_node& value)
+{_ivec2.x = value.attribute("x").as_int();
+ _ivec2.y = value.attribute("y").as_int();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_IVEC3>(pugi::xml_node& value)
+{_ivec3.x = value.attribute("x").as_int();
+ _ivec3.y = value.attribute("y").as_int();
+ _ivec3.z = value.attribute("z").as_int();}
+template <> void SettingValue::__decodeType<SETTING_TYPE_IVEC4>(pugi::xml_node& value)
+{_ivec4.x = value.attribute("x").as_int();
+ _ivec4.y = value.attribute("y").as_int();
+ _ivec4.z = value.attribute("z").as_int();
+ _ivec4.w = value.attribute("w").as_int();}
+
+//define a helper for the switch to decode the correct types
+#define __GLGE_SETTING_HELPER(type) \
+case type: \
+    __decodeType<type>(value); \
+    break;
+
+SettingType SettingValue::decode(pugi::xml_node& value, uint64_t type)
+{
+    //decode the type
+    SettingType _type = (SettingType)type;
+
+    //decode the value in the correct way
+    switch (_type)
+    {
+    //integers
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT8)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT8)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT16)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT16)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT32)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT32)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT64)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT64)
+    //floats
+    __GLGE_SETTING_HELPER(SETTING_TYPE_FLOAT)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DOUBLE)
+    //strings
+    __GLGE_SETTING_HELPER(SETTING_TYPE_STRING)
+    //float vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_VEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_VEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_VEC4)
+    //double vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DVEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DVEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DVEC4)
+    //uint32_t vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UIVEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UIVEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UIVEC4)
+    //int32_t vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_IVEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_IVEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_IVEC4)
+    
+    default:
+        break;
+    }
+
+    //return the type
+    return _type;
+}
+
+//delete the helper
+#undef __GLGE_SETTING_HELPER
+
 
 //store the names of the app settings as strings
 static constexpr const char* __SETTING_TYPE_NAMES[] = {
@@ -169,3 +483,193 @@ template uivec4* Settings::getSetting<uivec4, SETTING_TYPE_UIVEC4>(const String&
 template ivec2* Settings::getSetting<ivec2, SETTING_TYPE_IVEC2>(const String& name) noexcept;
 template ivec3* Settings::getSetting<ivec3, SETTING_TYPE_IVEC3>(const String& name) noexcept;
 template ivec4* Settings::getSetting<ivec4, SETTING_TYPE_IVEC4>(const String& name) noexcept;
+
+#define __GLGE_SETTING_HELPER(type)\
+case type: \
+    setting.value.encode<type>(set); \
+    break;
+
+/**
+ * @brief add a single setting element to the document
+ * 
+ * @param node a reference to the node to attach the elements to
+ * @param name the name of the setting to store
+ * @param setting the actual setting to store
+ */
+static void __addSettingToDoc(pugi::xml_node& node, const String& name, const Setting& setting)
+{
+    //add the general setting element
+    pugi::xml_node set = node.append_child("Setting");
+    //store the name
+    set.append_attribute("name").set_value(name.c_str());
+    //store the type's value
+    switch (setting.type)
+    {
+    //integers
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT8)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT8)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT16)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT16)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT32)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT32)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_INT64)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UINT64)
+    //float
+    __GLGE_SETTING_HELPER(SETTING_TYPE_FLOAT)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DOUBLE)
+    //strings
+    __GLGE_SETTING_HELPER(SETTING_TYPE_STRING)
+    //float vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_VEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_VEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_VEC4)
+    //double vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DVEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DVEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_DVEC4)
+    //uint32_t vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UIVEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UIVEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_UIVEC4)
+    //int32_t vectors
+    __GLGE_SETTING_HELPER(SETTING_TYPE_IVEC2)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_IVEC3)
+    __GLGE_SETTING_HELPER(SETTING_TYPE_IVEC4)
+    
+    default:
+        break;
+    }
+}
+
+//delete the helper
+#undef __GLGE_SETTING_HELPER
+
+void Settings::saveToFile(const char* file)
+{
+    //create the pugixml file to save the settings to
+    pugi::xml_document doc;
+    pugi::xml_node settings = doc.append_child("Settings");
+    //iterate over all settings to save them
+    for (auto it = m_settings.begin(); it != m_settings.end(); ++it)
+    {__addSettingToDoc(settings, it->first, it->second);}
+
+    //save the pugixml file
+    GLGE_ASSERT("Failed to save the file " << std::filesystem::path(file), !doc.save_file(std::filesystem::path(file).c_str()));
+}
+
+void Settings::loadFromFile(const char* file)
+{
+    //clear the settings
+    m_settings.clear();
+    //load the file
+    pugi::xml_document doc;
+    pugi::xml_parse_result res = doc.load_file(std::filesystem::path(file).c_str());
+
+    //error checking
+    if (!res)
+    {
+        std::cerr << "[ERROR] Failed to load file " << std::filesystem::path(file) << " :\n" << res.description() << "\n";
+        return;
+    }
+
+    //load the actual stuff
+    pugi::xml_node setts = doc.child("Settings");
+    if (!setts) {
+        std::cerr << "[ERROR] Failed to parse file " << std::filesystem::path(file) << ": No element named \"Settings\" exists\n";
+        return;
+    }
+
+    //iterate over all children
+    for (pugi::xml_node_iterator it = setts.begin(); it != setts.end(); ++it)
+    {
+        //load the node
+        pugi::xml_attribute _name = it->attribute("name");
+
+        //create the actual setting
+        pugi::xml_node val = it->child("Value");
+        m_settings[_name.as_string()].type = m_settings[_name.as_string()].value.decode(val, val.attribute("type").as_ullong());
+    }
+}
+
+//specialize the print function
+//integers
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_INT8>(std::ostream& os) const {return os << value._int8_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UINT8>(std::ostream& os) const {return os << value._uint8_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_INT16>(std::ostream& os) const {return os << value._int16_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UINT16>(std::ostream& os) const {return os << value._uint16_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_INT32>(std::ostream& os) const {return os << value._int32_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UINT32>(std::ostream& os) const {return os << value._uint32_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_INT64>(std::ostream& os) const {return os << value._int64_t;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UINT64>(std::ostream& os) const {return os << value._uint64_t;}
+//floats
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_FLOAT>(std::ostream& os) const {return os << value._float;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_DOUBLE>(std::ostream& os) const {return os << value._double;}
+//string
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_STRING>(std::ostream& os) const {return os << value._string;}
+//float vectors
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_VEC2>(std::ostream& os) const {return os << value._vec2;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_VEC3>(std::ostream& os) const {return os << value._vec3;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_VEC4>(std::ostream& os) const {return os << value._vec4;}
+//double vectors
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_DVEC2>(std::ostream& os) const {return os << value._dvec2;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_DVEC3>(std::ostream& os) const {return os << value._dvec3;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_DVEC4>(std::ostream& os) const {return os << value._dvec4;}
+//uint32_t vectors
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UIVEC2>(std::ostream& os) const {return os << value._uivec2;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UIVEC3>(std::ostream& os) const {return os << value._uivec3;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_UIVEC4>(std::ostream& os) const {return os << value._uivec4;}
+//int32_t vectors
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_IVEC2>(std::ostream& os) const {return os << value._ivec2;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_IVEC3>(std::ostream& os) const {return os << value._ivec3;}
+template <> std::ostream& Setting::printSelf<SETTING_TYPE_IVEC4>(std::ostream& os) const {return os << value._ivec4;}
+
+//a helper define to use for setting switches
+#define __GLGE_HELPER_SETTING(type) \
+case type: \
+    return setting.printSelf<type>(os);
+
+std::ostream& operator<<(std::ostream& os, const s_Setting& setting) noexcept
+{
+    switch (setting.type)
+    {
+    //integers
+    __GLGE_HELPER_SETTING(SETTING_TYPE_INT8)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UINT8)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_INT16)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UINT16)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_INT32)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UINT32)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_INT64)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UINT64)
+    //floats
+    __GLGE_HELPER_SETTING(SETTING_TYPE_FLOAT)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_DOUBLE)
+    //string
+    __GLGE_HELPER_SETTING(SETTING_TYPE_STRING)
+    //float vectors
+    __GLGE_HELPER_SETTING(SETTING_TYPE_VEC2)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_VEC3)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_VEC4)
+    //doubles vectors
+    __GLGE_HELPER_SETTING(SETTING_TYPE_DVEC2)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_DVEC3)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_DVEC4)
+    //uint32_t vectors
+    __GLGE_HELPER_SETTING(SETTING_TYPE_IVEC2)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_IVEC3)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_IVEC4)
+    //int32_t vectors
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UIVEC2)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UIVEC3)
+    __GLGE_HELPER_SETTING(SETTING_TYPE_UIVEC4)
+    
+    default:
+        break;
+    }
+
+    //just print nothin'
+    return os;
+}
+
+//delete the helper define
+#undef __GLGE_HELPER_SETTING

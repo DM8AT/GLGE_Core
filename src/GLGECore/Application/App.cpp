@@ -290,3 +290,28 @@ void App::run()
     //shutdown everything
     m_layers.signalShutdown();
 }
+
+App* app_Create(const AppInfo* info) {return new App(*info);}
+
+App* app_CreateFrom(const String* name, const String* settingPath, const AppVersion version, uint8_t compatibility, bool debug)
+{return new App(*name, *settingPath, version, compatibility, debug);}
+
+App* app_CreateWithLayers(const Vector* vector, bool isLayerBase, const AppInfo* info)
+{return new App(*vector, isLayerBase, info->name, info->settingsPath, info->version, info->compatibility, info->debug);}
+
+App* app_CreateFromWithLayers(const Vector* vector, bool isLayerBase, const String* name, const String* settingPath, const AppVersion version, uint8_t compatibility, bool debug)
+{return new App(*vector, isLayerBase, *name, *settingPath, version, compatibility, debug);}
+
+void app_Delete(App* app) {delete app;}
+
+Settings* app_GetSettings(App* app) {return &app->getSettings();}
+
+LayerStack* app_GetLayerStack(App* app) {return &app->getLayerStack();}
+
+void app_Run(App* app) {app->run();}
+
+bool app_IsActive(const App* app) {return app->isActive();}
+
+void app_Stop(App* app) {app->stop();}
+
+App* app_GetApp() {return App::getApp();}

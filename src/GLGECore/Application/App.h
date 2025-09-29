@@ -242,6 +242,121 @@ protected:
 
 };
 
+//for C++ start a C section
+
+extern "C" {
+
+#else //else, use an opaque type
+
+/**
+ * @brief an opaque wrapper around an ap
+ * 
+ * The `unused` variable is actually UNUSED! DO NOT DEREFERENCE!
+ */
+typedef struct { uint8_t unused; } App;
+
+#endif
+
+/**
+ * @brief Create a new app instance
+ * 
+ * @param info a pointer to some information to create the app from
+ * @return App* a pointer to the new app object
+ */
+App* app_Create(const AppInfo* info);
+
+/**
+ * @brief Create a new app instance
+ * 
+ * @param name a pointer to a string that contains the app's name
+ * @param settingPath a pointer to a string that contains a path to the location the app file is located / Will be located
+ * @param version the version of the application
+ * @param compatibility store a bitmask to define how the app is compatable
+ * @param debug define if debugging is allowed
+ * @return App* a pointer to the new app instance
+ */
+App* app_CreateFrom(const String* name, const String* settingPath, const AppVersion version, uint8_t compatibility, bool debug);
+
+/**
+ * @brief Create a new app instance
+ * 
+ * @param vector a pointer to a vector with layers for the app
+ * @param isLayerBase store a boolean to define if the vector contains LayerBase pointer or Layer pointer (only important if pointers are used)
+ * @param info a pointer to the information structure that contains the info on how to create the application
+ * @return App* a pointer to the new app instance
+ */
+App* app_CreateWithLayers(const Vector* vector, bool isLayerBase, const AppInfo* info);
+
+/**
+ * @brief Create a new app instance
+ * 
+ * @param vector a pointer to a vector with layers for the app
+ * @param isLayerBase store a boolean to define if the vector contains LayerBase pointer or Layer pointer (only important if pointers are used)
+ * @param name a pointer to a string that contains the app's name
+ * @param settingPath a pointer to a string that contains a path to the location the app file is located / Will be located
+ * @param version the version of the application
+ * @param compatibility store a bitmask to define how the app is compatable
+ * @param debug define if debugging is allowed
+ * @return App* a pointer to the new app instance
+ */
+App* app_CreateFromWithLayers(const Vector* vector, bool isLayerBase, const String* name, const String* settingPath, const AppVersion version, uint8_t compatibility, bool debug);
+
+/**
+ * @brief delete an app instance
+ * 
+ * @param app a pointer to the instance to delete
+ */
+void app_Delete(App* app);
+
+/**
+ * @brief get a pointer to the settings stored in the application
+ * 
+ * @param app a pointer to the app to read the settings from
+ * @return Settings* a pointer to the settings object that belongs to the app
+ */
+Settings* app_GetSettings(App* app);
+
+/**
+ * @brief get the layer stack that belongs to the application
+ * 
+ * @param app a pointer to the app to quarry the layer stack from
+ * @return LayerStack* a pointer to the layer stack contained by the app
+ */
+LayerStack* app_GetLayerStack(App* app);
+
+/**
+ * @brief run an app structure
+ * 
+ * @param app a pointer to the app instance to run
+ */
+void app_Run(App* app);
+
+/**
+ * @brief check if an application is running
+ * 
+ * @param app a pointer to the application to check
+ * @return true : the application is currently running
+ * @return false : the application is currently not running
+ */
+bool app_IsActive(const App* app);
+
+/**
+ * @brief stop the application if it is running
+ * 
+ * @param app a pointer to the application to stop
+ */
+void app_Stop(App* app);
+
+/**
+ * @brief get the application that uses this thread as its main thread
+ * 
+ * @return App* a pointer to the application that owns this thread or NULL if none does
+ */
+App* app_GetApp();
+
+//end the C section
+#if __cplusplus
+}
 #endif
 
 #endif

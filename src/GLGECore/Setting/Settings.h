@@ -482,7 +482,7 @@ $$ |  $$ |$$ |         $$ |      $$ |     $$ |  $$ |\$$$ |$$ |  $$ |
      * @param name the name of the setting to quarry
      * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
      */
-    inline uint8_t* getSetting_Unt8(const String& name) noexcept {return getSetting<uint8_t, SETTING_TYPE_UINT8>(name);}
+    inline uint8_t* getSetting_UInt8(const String& name) noexcept {return getSetting<uint8_t, SETTING_TYPE_UINT8>(name);}
 
     /**
      * @brief Get the state of a setting with the type of an 16 bit signed integer
@@ -498,7 +498,7 @@ $$ |  $$ |$$ |         $$ |      $$ |     $$ |  $$ |\$$$ |$$ |  $$ |
      * @param name the name of the setting to quarry
      * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
      */
-    inline uint16_t* getSetting_Unt16(const String& name) noexcept {return getSetting<uint16_t, SETTING_TYPE_UINT16>(name);}
+    inline uint16_t* getSetting_UInt16(const String& name) noexcept {return getSetting<uint16_t, SETTING_TYPE_UINT16>(name);}
 
     /**
      * @brief Get the state of a setting with the type of an 32 bit signed integer
@@ -514,7 +514,7 @@ $$ |  $$ |$$ |         $$ |      $$ |     $$ |  $$ |\$$$ |$$ |  $$ |
      * @param name the name of the setting to quarry
      * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
      */
-    inline uint32_t* getSetting_Unt32(const String& name) noexcept {return getSetting<uint32_t, SETTING_TYPE_UINT32>(name);}
+    inline uint32_t* getSetting_UInt32(const String& name) noexcept {return getSetting<uint32_t, SETTING_TYPE_UINT32>(name);}
 
     /**
      * @brief Get the state of a setting with the type of an 64 bit signed integer
@@ -530,7 +530,7 @@ $$ |  $$ |$$ |         $$ |      $$ |     $$ |  $$ |\$$$ |$$ |  $$ |
      * @param name the name of the setting to quarry
      * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
      */
-    inline uint64_t* getSetting_Unt64(const String& name) noexcept {return getSetting<uint64_t, SETTING_TYPE_UINT64>(name);}
+    inline uint64_t* getSetting_UInt64(const String& name) noexcept {return getSetting<uint64_t, SETTING_TYPE_UINT64>(name);}
 
     /**
      * @brief Get the state of a setting with the type of a 32 bit IEEE float
@@ -684,6 +684,513 @@ protected:
 
 };
 
+#else //else, create an opaque wrapper
+
+/**
+ * @brief store an opaque settings structure
+ * 
+ * DO NOT DEREFERENCE, THE UNUSED ELEMENT IS ONLY SO MSVC COMPILES THE CODE
+ */
+typedef struct s_Settings {uint8_t unused} Settings;
+
 #endif
+
+/**
+ * @brief Create a new settings object
+ * 
+ * @return Settings* a pointer to the new settings object
+ */
+Settings* settings_Create();
+
+/**
+ * @brief delete a settings object
+ * 
+ * @param settings a pointer to the settings object to delete
+ */
+void settings_Delete(Settings* settings);
+
+/**
+ * @brief Save the settings stored in a settings object to a file
+ * 
+ * @param file the path of the file to store the settings to
+ * @param settings a pointer to the settings object to save
+ */
+void settings_SaveToFile(const char* file, Settings* settings);
+
+/**
+ * @brief Load a settings object from a file
+ * 
+ * @param file the path to the file to load the settings from
+ * @param settings a pointer to the settings object to load to
+ */
+void settings_LoadFromFile(const char* file, Settings* settings);
+
+/**
+ * @brief get the amount of setting objects available
+ * 
+ * @param settings the setting object to quarry the information from
+ * @return uint64_t the amount of settings the settings object has
+ */
+uint64_t settings_GetSettingCount(const Settings* settings);
+
+/**
+ * @brief Get the name of a setting that is quarried by the index
+ * 
+ * @param index the index to quarry the setting's name from
+ * @param settings the settings object to quarry the information from
+ * @return const String* a pointer to the setting's name
+ */
+const String* settings_getSettingName(uint64_t index, const Settings* settings);
+
+/**
+ * @brief get a setting by an index
+ * 
+ * @param index the index to quarry the setting from
+ * @param settings a pointer to the settings object to quarry the information from
+ * @return const Setting* a pointer to the setting element
+ */
+const Setting* settings_getSetting(uint64_t index, const Settings* settings);
+
+//integers
+
+/**
+ * @brief Set a single setting element to a signed 8 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Int8(const String* name, int8_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to an unsigned 8 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UInt8(const String* name, uint8_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a signed 16 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Int16(const String* name, int16_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to an unsigned 16 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UInt16(const String* name, uint16_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a signed 32 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Int32(const String* name, int32_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to an unsigned 32 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UInt32(const String* name, uint32_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a signed 64 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Int64(const String* name, int64_t value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to an unsigned 64 bit integer
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UInt64(const String* name, uint64_t value, Settings* settings);
+
+//floats
+
+/**
+ * @brief Set a single setting element to a 32 bit IEEE float
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Float(const String* name, float value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to 64 bit IEEE float (double)
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Double(const String* name, double value, Settings* settings);
+
+//strings
+
+/**
+ * @brief Set a single setting element to a string
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_String(const String* name, const String* value, Settings* settings);
+
+//float vectors
+
+/**
+ * @brief Set a single setting element to a 2 element vector of floats
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Vec2(const String* name, const vec2* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 3 element vector of floats
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Vec3(const String* name, const vec3* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 4 element vector of floats
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_Vec4(const String* name, const vec4* value, Settings* settings);
+
+//double vectors
+
+/**
+ * @brief Set a single setting element to a 2 element vector of doubles
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_DVec2(const String* name, const dvec2* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 3 element vector of doubles
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_DVec3(const String* name, const dvec3* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 4 element vector of doubles
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_DVec4(const String* name, const dvec4* value, Settings* settings);
+
+//uint32_t vectors
+
+/**
+ * @brief Set a single setting element to a 2 element vector of unsigned 32 bit integers
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UIVec2(const String* name, const uivec2* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 3 element vector of unsigned 32 bit integers
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UIVec3(const String* name, const uivec3* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 4 element vector of unsigned 32 bit integers
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_UIVec4(const String* name, const uivec4* value, Settings* settings);
+
+//int32_t vectors
+
+/**
+ * @brief Set a single setting element to a 2 element vector of signed 32 bit integers
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_IVec2(const String* name, const ivec2* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 3 element vector of signed 32 bit integers
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_IVec3(const String* name, const ivec3* value, Settings* settings);
+
+/**
+ * @brief Set a single setting element to a 4 element vector of signed 32 bit integers
+ * 
+ * @param name the name of the setting to change / initialize
+ * @param value the new value for the value
+ * @param settings a pointer to the settings object to set the setting for
+ */
+void settings_SetSetting_IVec4(const String* name, const ivec4* value, Settings* settings);
+
+//integers
+
+/**
+ * @brief Get the state of a setting with the type of an 8 bit signed integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+int8_t* settings_GetSetting_Int8(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 8 bit unsigned integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uint8_t* settings_GetSetting_UInt8(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 16 bit signed integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+int16_t* settings_GetSetting_Int16(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 16 bit unsigned integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uint16_t* settings_GetSetting_UInt16(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 32 bit signed integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+int32_t* settings_GetSetting_Int32(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 32 bit unsigned integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uint32_t* settings_GetSetting_UInt32(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 64 bit signed integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+int64_t* settings_GetSetting_Int64(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of an 64 bit unsigned integer
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uint64_t* settings_GetSetting_UInt64(const String* name, Settings* settings);
+
+//floats
+
+/**
+ * @brief Get the state of a setting with the type of a 32 bit IEEE float
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+float* settings_GetSetting_Float(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a 64 bit IEEE float (double)
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+double* settings_GetSetting_Double(const String* name, Settings* settings);
+
+//strings
+
+/**
+ * @brief Get the state of a setting with the type of a string
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+String* settings_GetSetting_String(const String* name, Settings* settings);
+
+//float vectors
+
+/**
+ * @brief Get the state of a setting with the type of a float vector with 2 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+vec2* settings_GetSetting_Vec2(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a float vector with 3 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+vec3* settings_GetSetting_Vec3(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a float vector with 4 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+vec4* settings_GetSetting_Vec4(const String* name, Settings* settings);
+
+//double vectors
+
+/**
+ * @brief Get the state of a setting with the type of a double vector with 2 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+dvec2* settings_GetSetting_DVec2(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a double vector with 3 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+dvec3* settings_GetSetting_DVec3(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a double vector with 4 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+dvec4* settings_GetSetting_DVec4(const String* name, Settings* settings);
+
+//uint32_t vectors
+
+/**
+ * @brief Get the state of a setting with the type of a unsigned 32 bit integer vector with 2 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uivec2* settings_GetSetting_UIVec2(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a unsigned 32 bit integer vector with 3 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uivec3* settings_GetSetting_UIVec3(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a unsigned 32 bit integer vector with 4 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+uivec4* settings_GetSetting_UIVec4(const String* name, Settings* settings);
+
+//int32_t vectors
+
+/**
+ * @brief Get the state of a setting with the type of a signed 32 bit integer vector with 2 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+ivec2* settings_GetSetting_IVec2(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a signed 32 bit integer vector with 3 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+ivec3* settings_GetSetting_IVec3(const String* name, Settings* settings);
+
+/**
+ * @brief Get the state of a setting with the type of a signed 32 bit integer vector with 4 elements
+ * 
+ * @param name the name of the setting to quarry
+ * @param settings a pointer to the settings object to quarry the element from
+ * @return a pointer to the value or NULL if something went wrong (the element was not found / type mismatch)
+ */
+ivec4* settings_GetSetting_IVec4(const String* name, Settings* settings);
 
 #endif

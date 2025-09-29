@@ -673,3 +673,138 @@ std::ostream& operator<<(std::ostream& os, const s_Setting& setting) noexcept
 
 //delete the helper define
 #undef __GLGE_HELPER_SETTING
+
+
+Settings* settings_Create() {return new Settings();}
+
+void settings_Delete(Settings* settings) {delete settings;}
+
+void settings_SaveToFile(const char* file, Settings* settings) {settings->saveToFile(file);}
+
+void settings_LoadFromFile(const char* file, Settings* settings) {settings->loadFromFile(file);}
+
+uint64_t settings_GetSettingCount(const Settings* settings) {return settings->getSettingCount();}
+
+const String* settings_getSettingName(uint64_t index, const Settings* settings) {return &settings->getSettingName(index);}
+
+const Setting* settings_getSetting(uint64_t index, const Settings* settings) {return &settings->getSetting(index);}
+
+//integers
+
+void settings_SetSetting_Int8(const String* name, int8_t value, Settings* settings) {settings->setSetting_Int8(*name, value);}
+
+void settings_SetSetting_UInt8(const String* name, uint8_t value, Settings* settings) {settings->setSetting_Uint8(*name, value);}
+
+void settings_SetSetting_Int16(const String* name, int16_t value, Settings* settings) {settings->setSetting_Uint16(*name, value);}
+
+void settings_SetSetting_UInt16(const String* name, uint16_t value, Settings* settings) {settings->setSetting_Uint16(*name, value);}
+
+void settings_SetSetting_Int32(const String* name, int32_t value, Settings* settings) {settings->setSetting_Uint32(*name, value);}
+
+void settings_SetSetting_UInt32(const String* name, uint32_t value, Settings* settings) {settings->setSetting_Uint32(*name, value);}
+
+void settings_SetSetting_Int64(const String* name, int64_t value, Settings* settings) {settings->setSetting_Uint64(*name, value);}
+
+void settings_SetSetting_UInt64(const String* name, uint64_t value, Settings* settings) {settings->setSetting_Uint64(*name, value);}
+
+//floats
+
+void settings_SetSetting_Float(const String* name, float value, Settings* settings) {settings->setSetting_Float(*name, value);}
+
+void settings_SetSetting_Double(const String* name, double value, Settings* settings) {settings->setSetting_Double(*name, value);}
+
+//strings
+
+void settings_SetSetting_String(const String* name, const String* value, Settings* settings) {settings->setSetting_String(*name, *value);}
+
+//float vectors
+
+void settings_SetSetting_Vec2(const String* name, const vec2* value, Settings* settings) {settings->setSetting_Vec2(*name, *value);}
+
+void settings_SetSetting_Vec3(const String* name, const vec3* value, Settings* settings) {settings->setSetting_Vec3(*name, *value);}
+
+void settings_SetSetting_Vec4(const String* name, const vec4* value, Settings* settings) {settings->setSetting_Vec4(*name, *value);}
+
+//double vectors
+
+void settings_SetSetting_DVec2(const String* name, const dvec2* value, Settings* settings) {settings->setSetting_DVec2(*name, *value);}
+
+void settings_SetSetting_DVec3(const String* name, const dvec3* value, Settings* settings) {settings->setSetting_DVec3(*name, *value);}
+
+void settings_SetSetting_DVec4(const String* name, const dvec4* value, Settings* settings) {settings->setSetting_DVec4(*name, *value);}
+
+//uint32_t vectors
+
+void settings_SetSetting_UIVec2(const String* name, const uivec2* value, Settings* settings) {settings->setSetting_UIVec2(*name, *value);}
+
+void settings_SetSetting_UIVec3(const String* name, const uivec3* value, Settings* settings) {settings->setSetting_UIVec3(*name, *value);}
+
+void settings_SetSetting_UIVec4(const String* name, const uivec4* value, Settings* settings) {settings->setSetting_UIVec4(*name, *value);}
+
+//int32_t vectors
+
+void settings_SetSetting_IVec2(const String* name, const ivec2* value, Settings* settings) {settings->setSetting_IVec2(*name, *value);}
+
+void settings_SetSetting_IVec3(const String* name, const ivec3* value, Settings* settings) {settings->setSetting_IVec3(*name, *value);}
+
+void settings_SetSetting_IVec4(const String* name, const ivec4* value, Settings* settings) {settings->setSetting_IVec4(*name, *value);}
+
+//integers
+
+int8_t* settings_GetSetting_Int8(const String* name, Settings* settings) {return settings->getSetting_Int8(*name);}
+
+uint8_t* settings_GetSetting_UInt8(const String* name, Settings* settings) {return settings->getSetting_UInt8(*name);}
+
+int16_t* settings_GetSetting_Int16(const String* name, Settings* settings) {return settings->getSetting_Int16(*name);}
+
+uint16_t* settings_GetSetting_UInt16(const String* name, Settings* settings) {return settings->getSetting_UInt16(*name);}
+
+int32_t* settings_GetSetting_Int32(const String* name, Settings* settings) {return settings->getSetting_Int32(*name);}
+
+uint32_t* settings_GetSetting_UInt32(const String* name, Settings* settings) {return settings->getSetting_UInt32(*name);}
+
+int64_t* settings_GetSetting_Int64(const String* name, Settings* settings) {return settings->getSetting_Int64(*name);}
+
+uint64_t* settings_GetSetting_UInt64(const String* name, Settings* settings) {return settings->getSetting_UInt64(*name);}
+
+//floats
+
+float* settings_GetSetting_Float(const String* name, Settings* settings) {return settings->getSetting_Float(*name);}
+
+double* settings_GetSetting_Double(const String* name, Settings* settings) {return settings->getSetting_Double(*name);}
+
+//strings
+
+String* settings_GetSetting_String(const String* name, Settings* settings) {return settings->getSetting_String(*name);}
+
+//float vectors
+
+vec2* settings_GetSetting_Vec2(const String* name, Settings* settings) {return settings->getSetting_Vec2(*name);}
+
+vec3* settings_GetSetting_Vec3(const String* name, Settings* settings) {return settings->getSetting_Vec3(*name);}
+
+vec4* settings_GetSetting_Vec4(const String* name, Settings* settings) {return settings->getSetting_Vec4(*name);}
+
+//double vectors
+
+dvec2* settings_GetSetting_DVec2(const String* name, Settings* settings) {return settings->getSetting_DVec2(*name);}
+
+dvec3* settings_GetSetting_DVec3(const String* name, Settings* settings) {return settings->getSetting_DVec3(*name);}
+
+dvec4* settings_GetSetting_DVec4(const String* name, Settings* settings) {return settings->getSetting_DVec4(*name);}
+
+//uint32_t vectors
+
+uivec2* settings_GetSetting_UIVec2(const String* name, Settings* settings) {return settings->getSetting_UIVec2(*name);}
+
+uivec3* settings_GetSetting_UIVec3(const String* name, Settings* settings) {return settings->getSetting_UIVec3(*name);}
+
+uivec4* settings_GetSetting_UIVec4(const String* name, Settings* settings) {return settings->getSetting_UIVec4(*name);}
+
+//int32_t vectors
+
+ivec2* settings_GetSetting_IVec2(const String* name, Settings* settings) {return settings->getSetting_IVec2(*name);}
+
+ivec3* settings_GetSetting_IVec3(const String* name, Settings* settings) {return settings->getSetting_IVec3(*name);}
+
+ivec4* settings_GetSetting_IVec4(const String* name, Settings* settings) {return settings->getSetting_IVec4(*name);}

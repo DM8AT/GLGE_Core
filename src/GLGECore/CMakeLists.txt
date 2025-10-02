@@ -60,3 +60,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O2")
 add_subdirectory(${PROJECT_SOURCE_DIR}/../external/pugixml ${PROJECT_BINARY_DIR}/../external/pugixml)
 target_link_libraries(GLGE_CORE PRIVATE pugixml)
 target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/pugixml/src)
+## LibZip
+add_subdirectory(${PROJECT_SOURCE_DIR}/../external/libzip ${PROJECT_BINARY_DIR}/../external/libzip)
+target_link_libraries(GLGE_CORE PRIVATE zip)
+target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/libzip/src)

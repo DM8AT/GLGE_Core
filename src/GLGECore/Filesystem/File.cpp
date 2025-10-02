@@ -34,7 +34,7 @@ bool File::open(const std::filesystem::path& path, bool allowCreate)
     if (std::filesystem::is_regular_file(path))
     {
         //open the file
-        m_file = fopen(path.c_str(), "rb");
+        m_file = fopen(path.string().c_str(), "rb");
         //check for success (this SHOULD NOT FAIL)
         if (!m_file) {return false;}
 
@@ -52,7 +52,7 @@ bool File::open(const std::filesystem::path& path, bool allowCreate)
     }
 
     //open the file
-    m_file = fopen(path.c_str(), (allowCreate) ? "wb+" : "rb+");
+    m_file = fopen(path.string().c_str(), (allowCreate) ? "wb+" : "rb+");
     //sanity check
     if (!m_file) {return false;}
 
@@ -92,7 +92,7 @@ void File::close()
     //reset all attributes
     m_file = nullptr;
     m_contents = "";
-    m_lastUpdate = std::filesystem::file_time_type(std::chrono::nanoseconds(0));
+    m_lastUpdate = std::filesystem::file_time_type();
     m_path = "";
 }
 

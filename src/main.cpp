@@ -43,9 +43,14 @@ void preprocess(String* content, void*)
 
 int main()
 {
-    File f("test.txt", true, {
-        (FileDecorator){preprocess,nullptr,nullptr,nullptr,nullptr}
-    });
+    FileDecorator decor = {
+        .preprocessor = preprocess,
+        .postprocessor = nullptr,
+        .onOpen = nullptr,
+        .onClose = nullptr,
+        .userData = nullptr
+    };
+    File f("test.txt", true, {decor});
 
     std::cout << f.getContents() << "\n";
 

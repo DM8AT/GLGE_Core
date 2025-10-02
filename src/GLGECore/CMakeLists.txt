@@ -60,7 +60,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O2")
 add_subdirectory(${PROJECT_SOURCE_DIR}/../external/pugixml ${PROJECT_BINARY_DIR}/../external/pugixml)
 target_link_libraries(GLGE_CORE PRIVATE pugixml)
 target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/pugixml/src)
-## LibZip
-add_subdirectory(${PROJECT_SOURCE_DIR}/../external/libzip ${PROJECT_BINARY_DIR}/../external/libzip)
-target_link_libraries(GLGE_CORE PRIVATE zip)
-target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/libzip/src)
+## Add zlib
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
+set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../external/zlib ${PROJECT_BINARY_DIR}/../external/zlib)
+target_link_libraries(GLGE_CORE PRIVATE zlibstatic)

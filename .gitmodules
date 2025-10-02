@@ -7,6 +7,6 @@
 [submodule "src/external/pugixml"]
 	path = src/external/pugixml
 	url = https://github.com/zeux/pugixml.git
-[submodule "libzip"]
-	path = src/external/libzip
-	url = https://github.com/nih-at/libzip.git
+[submodule "zlib"]
+	path = src/external/zlib
+	url = https://github.com/madler/zlib.git

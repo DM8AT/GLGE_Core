@@ -21,5 +21,7 @@
 #include "Layers/Layers.h"
 //include the application system
 #include "Application/Application.h"
+//include the filesystem
+#include "Filesystem/Filesystem.h"
 
 #endif

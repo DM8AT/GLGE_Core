@@ -29,6 +29,8 @@ set(GLGE_CORE_SRC
     Application/App.cpp
 
     Setting/Settings.cpp
+
+    Filesystem/File.cpp
 )
 
 # create the library

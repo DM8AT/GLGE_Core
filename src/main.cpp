@@ -33,8 +33,30 @@ void stackFunc_update()
     std::cout << "Updated\n";
 }
 
+void preprocess(String* content, void*)
+{
+    for (size_t i = 0; i < content->size(); ++i)
+    {
+        if ((*content)[i] == 'f') {(*content)[i] = 't';}
+    }
+}
+
 int main()
 {
+    File f("test.txt", true, {
+        (FileDecorator){
+            .preprocessor = preprocess,
+            .postprocessor = nullptr,
+            .onOpen = nullptr,
+            .onClose = nullptr,
+            .userData = nullptr
+        }
+    });
+
+    std::cout << f.getContents() << "\n";
+
+    return 0;
+    
     App app({
         new Layer(
             "Main", "Second Test", {

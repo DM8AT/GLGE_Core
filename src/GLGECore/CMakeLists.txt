@@ -89,7 +89,7 @@ endif()
 ExternalProject_Add(OpenSSL
     GIT_REPOSITORY https://github.com/openssl/openssl.git
     GIT_TAG master
-    PREFIX ${CMAKE_BINARY_DIR}/_deps/openssl
+    PREFIX ${PROJECT_SOURCE_DIR}/../external/openssl
     CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_CMD}
     BUILD_COMMAND ${OPENSSL_BUILD_CMD}
     INSTALL_COMMAND ${OPENSSL_INSTALL_CMD}

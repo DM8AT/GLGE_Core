@@ -4,3 +4,5 @@ build*
 .vscode
 # ignore GLGE app files
 *.gapp
+# Ignore OpenSSL
+src/external/openssl

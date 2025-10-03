@@ -67,16 +67,31 @@ set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
 add_subdirectory(${PROJECT_SOURCE_DIR}/../external/zlib ${PROJECT_BINARY_DIR}/../external/zlib)
 target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
 target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/zlib)
-## Use ExternalProject
+## Add OpenSSL
 include(ExternalProject)
-ExternalProject_Add(
-    OpenSSL
+# Set install directory for OpenSSL
+set(OPENSSL_INSTALL_DIR ${CMAKE_BINARY_DIR}/openssl-install)
+# Detect platform and set configuration
+if(WIN32)
+    if(MSVC)
+        set(OPENSSL_CONFIGURE_CMD perl Configure VC-WIN64A --prefix=${OPENSSL_INSTALL_DIR} no-shared)
+        set(OPENSSL_BUILD_CMD nmake)
+        set(OPENSSL_INSTALL_CMD nmake install_sw)
+    else()
+        message(FATAL_ERROR "Only MSVC toolchain is supported on Windows in this example.")
+    endif()
+else()
+    set(OPENSSL_CONFIGURE_CMD perl Configure linux-x86_64 --prefix=${OPENSSL_INSTALL_DIR} no-shared)
+    set(OPENSSL_BUILD_CMD make -j)
+    set(OPENSSL_INSTALL_CMD make install_sw)
+endif()
+
+ExternalProject_Add(OpenSSL
     GIT_REPOSITORY https://github.com/openssl/openssl.git
     GIT_TAG master
-    PREFIX ${PROJECT_BINARY_DIR}/../external/
-    CONFIGURE_COMMAND 
-        perl Configure linux-x86_64 --prefix=<INSTALL_DIR>
-    BUILD_COMMAND make -j
-    INSTALL_COMMAND make install_sw
+    PREFIX ${CMAKE_BINARY_DIR}/_deps/openssl
+    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_CMD}
+    BUILD_COMMAND ${OPENSSL_BUILD_CMD}
+    INSTALL_COMMAND ${OPENSSL_INSTALL_CMD}
     BUILD_IN_SOURCE 1
 )

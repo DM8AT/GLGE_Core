@@ -67,3 +67,16 @@ set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
 add_subdirectory(${PROJECT_SOURCE_DIR}/../external/zlib ${PROJECT_BINARY_DIR}/../external/zlib)
 target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
 target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/zlib)
+## Use ExternalProject
+include(ExternalProject)
+ExternalProject_Add(
+    OpenSSL
+    GIT_REPOSITORY https://github.com/openssl/openssl.git
+    GIT_TAG master
+    PREFIX ${PROJECT_BINARY_DIR}/../external/
+    CONFIGURE_COMMAND 
+        perl Configure linux-x86_64 --prefix=<INSTALL_DIR>
+    BUILD_COMMAND make -j
+    INSTALL_COMMAND make install_sw
+    BUILD_IN_SOURCE 1
+)

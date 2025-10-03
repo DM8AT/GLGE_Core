@@ -51,7 +51,7 @@ int main()
         .onClose = NULL,
         .userData = &level
     };
-    File f("test.app", true, {compress});
+    File f("test.gapp", true, {compress});
     printf("%s\n", f.getContents().c_str());
     f.getContents() = "Hello World!";
     f.save();

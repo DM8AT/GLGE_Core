@@ -43,17 +43,19 @@ void preprocess(String* content, void*)
 
 int main()
 {
-    FileDecorator decor = {
-        .preprocessor = preprocess,
-        .postprocessor = nullptr,
-        .onOpen = nullptr,
-        .onClose = nullptr,
-        .userData = nullptr
+    int level = -1;
+    FileDecorator compress = {
+        .preprocessor = glge_Decompress,
+        .postprocessor = glge_Compress,
+        .onOpen = NULL,
+        .onClose = NULL,
+        .userData = &level
     };
-    File f("test.txt", true, {decor});
-
-    std::cout << f.getContents() << "\n";
-
+    File f("test.app", true, {compress});
+    printf("%s\n", f.getContents().c_str());
+    f.getContents() = "Hello World!";
+    f.save();
+    
     return 0;
     
     App app({

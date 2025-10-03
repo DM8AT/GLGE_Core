@@ -15,5 +15,7 @@
 
 //include the file wrapper
 #include "File.h"
+//include the compression stuff
+#include "Compression.h"
 
 #endif

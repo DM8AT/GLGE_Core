@@ -67,6 +67,3 @@ set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
 add_subdirectory(${PROJECT_SOURCE_DIR}/../external/zlib ${PROJECT_BINARY_DIR}/../external/zlib)
 target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
 target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/zlib)
-## Add OpenSSL
-add_subdirectory(${PROJECT_SOURCE_DIR}/../external/openssl ${PROJECT_BINARY_DIR}/../external/openssl)
-target_link_libraries(GLGE_CORE PRIVATE openssl)

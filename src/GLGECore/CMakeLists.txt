@@ -74,7 +74,7 @@ find_package(OpenSSL QUIET)
 if (OpenSSL_FOUND)
     # Add OpenSSL
     message(STATUS "System OpenSSL found: ${OpenSSL_VERSION}")
-    target_link_libraries(GLGE_CORE PRIVATE ssl)
+    target_link_libraries(GLGE_CORE PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 else()
     # Fatal error - OpenSSL is required
     message(FATAL_ERROR "OpenSSL not found. Please install it via a package manager (vcpkg / apt / brew / choco / conan).")

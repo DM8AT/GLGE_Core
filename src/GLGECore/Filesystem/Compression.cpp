@@ -21,6 +21,8 @@
 //for memory operations
 #include <cstring>
 
+#include <openssl/sha.h>
+
 //define how big a single chunk is
 #define CHUNK 16384
 

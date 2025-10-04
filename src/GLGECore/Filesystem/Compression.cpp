@@ -21,8 +21,6 @@
 //for memory operations
 #include <cstring>
 
-#include <iostream>
-
 //define how big a single chunk is
 #define CHUNK 16384
 

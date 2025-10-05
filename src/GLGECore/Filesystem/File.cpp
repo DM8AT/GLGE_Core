@@ -102,7 +102,7 @@ void File::save()
     if (!isOpen()) {return;}
 
     //iterate over all decorators and call the open function if it exists
-    for (size_t i = 0; i < m_decorators.size(); ++i) {if (m_decorators[i].postprocessor) {(*m_decorators[i].postprocessor)(&m_contents, m_decorators[i].userData);}}
+    for (size_t i = m_decorators.size(); i > 0; --i) {if (m_decorators[i-1].postprocessor) {(*m_decorators[i-1].postprocessor)(&m_contents, m_decorators[i-1].userData);}}
 
     //write all contents to the file
     fseek(m_file, 0, SEEK_SET);

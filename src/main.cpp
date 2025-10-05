@@ -51,7 +51,20 @@ int main()
         .onClose = NULL,
         .userData = &level
     };
-    File f("test.gapp", true, {compress});
+    String key_1 = "thiskeyisverybad";
+    String key_2 = "dontusethisinput";
+    CryptoInfo cInfo = {
+        .key_1 = &key_1,
+        .key_2 = &key_2
+    };
+    FileDecorator encrypt = {
+        .preprocessor = glge_Decrypt,
+        .postprocessor = glge_Encrypt,
+        .onOpen = NULL,
+        .onClose = NULL,
+        .userData = &cInfo
+    };
+    File f("test.file", false, {encrypt, compress});
     printf("%s\n", f.getContents().c_str());
     f.getContents() = "Hello World!";
     f.save();

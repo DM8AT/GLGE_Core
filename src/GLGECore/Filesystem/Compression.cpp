@@ -21,8 +21,6 @@
 //for memory operations
 #include <cstring>
 
-#include <openssl/sha.h>
-
 //define how big a single chunk is
 #define CHUNK 16384
 
@@ -35,6 +33,7 @@ void glge_Compress(String* input, void* level)
 
     //check if the compression level is valid
     if ((compLevel > Z_BEST_COMPRESSION) || (compLevel < Z_DEFAULT_COMPRESSION)) {
+        printf("Invalid compression level of %d. Valid compression levels must be in range %d to %d\n", compLevel, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION);
         *input = "";
         return;
     }
@@ -48,6 +47,7 @@ void glge_Compress(String* input, void* level)
     //initialize the stream
     if (deflateInit(&strm, compLevel) != Z_OK) {
         //stop early
+        printf("Failed to initialize the compression stream\n");
         *input = "";
         return;
     }
@@ -83,6 +83,7 @@ void glge_Compress(String* input, void* level)
             ret = deflate(&strm, flush);
             if (ret == Z_STREAM_ERROR) {
                 //clean up and stop
+                printf("Something went wrong while decompressing. ZLib error code: %d\n", ret);
                 (void)deflateEnd(&strm);
                 *input = output;
                 return;
@@ -121,6 +122,7 @@ void glge_Decompress(String* input, void*)
     //initialize the stream for decompression
     if (inflateInit(&strm) != Z_OK) {
         //something went wrong
+        printf("Failed to initialize the decompression stream\n");
         *input = "";
         return;
     }
@@ -152,6 +154,7 @@ void glge_Decompress(String* input, void*)
             //error checking
             if (ret == Z_STREAM_ERROR || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) {
                 //something went wrong - don't forget to clean up
+                printf("Something went wrong while decompressing the input. ZLib error code: %d\n", ret);
                 inflateEnd(&strm);
                 *input = "";
                 return;

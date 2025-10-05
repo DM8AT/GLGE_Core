@@ -17,5 +17,7 @@
 #include "File.h"
 //include the compression stuff
 #include "Compression.h"
+//include the encryption stuff
+#include "Encryption.h"
 
 #endif

@@ -10,8 +10,8 @@
  */
 
 //header guard
-#ifndef _GLGE_CORE_COMPRESSION_
-#define _GLGE_CORE_COMPRESSION_
+#ifndef _GLGE_CORE_FILESYSTEM_COMPRESSION_
+#define _GLGE_CORE_FILESYSTEM_COMPRESSION_
 
 //include types
 #include "../Types.h"

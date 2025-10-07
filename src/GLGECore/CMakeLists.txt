@@ -24,6 +24,8 @@ set(GLGE_CORE_SRC
     Filesystem/File.cpp
     Filesystem/Compression.cpp
     Filesystem/Encryption.cpp
+
+    Geometry/Surface/VertexLayout.cpp
 )
 
 add_library(GLGE_CORE ${GLGE_CORE_SRC})

@@ -1,5 +1,5 @@
 /**
- * @file VertexLayout.h
+ * @file s_VertexLayout.h
  * @author DM8AT
  * @brief define what a vertex layout is
  * @version 0.1
@@ -20,23 +20,26 @@
 
 //check if this is C++
 #if __cplusplus
-//include map for a constructor
-#include <map>
-//include arrays for ordered storage
-#include <array>
+    //include map for a constructor
+    #include <map>
+    //include arrays for ordered storage
+    #include <array>
+#endif
 
 /**
  * @brief store an actual vertex
  */
-class VertexLayout {
-public:
+typedef struct s_VertexLayout {
+
+    //member functions for C++
+    #if __cplusplus 
 
     /**
      * @brief Construct a new Vertex Layout
      * 
      * @param elements a map of element types to the element data types
      */
-    VertexLayout(const std::map<VertexElementType, VertexElementDataType>& elements) noexcept
+    s_VertexLayout(const std::map<VertexElementType, VertexElementDataType>& elements) noexcept
     {
         //store the index of the element
         uint64_t index = 0;
@@ -52,7 +55,7 @@ public:
      * 
      * @param initList an initializer list containing all the elements for the vertex layout
      */
-    constexpr VertexLayout(const std::initializer_list<VertexElement>& initList) noexcept
+    constexpr s_VertexLayout(const std::initializer_list<VertexElement>& initList) noexcept
     {
         //iterate over all elements in the initializer list
         for (uint64_t i = 0; i < initList.size(); ++i) {
@@ -77,7 +80,7 @@ public:
      * @param elements a C array of elements to initialize the vertex layout from
      * @param elementCount the amount of elements in the C array
      */
-    constexpr VertexLayout(const VertexElement* elements, uint64_t elementCount) noexcept
+    constexpr s_VertexLayout(const VertexElement* elements, uint64_t elementCount) noexcept
     {
         //iterate over all elements and map them correctly
         for (uint64_t i = 0; i < elementCount; ++i) {
@@ -122,13 +125,17 @@ public:
         return UINT64_MAX;
     }
 
-protected:
+    #endif
 
     //store a mapping from an index to a vertex element
     std::array<VertexElement, VERTEX_ELEMENT_TYPE_COUNT> m_elements;
 
     //store if something went wrong with the construction (example: multiple definitions for the same type)
     bool m_invalidConstruction = false;
+
+    //protected functions for C++
+    #if __cplusplus
+    protected:
 
     //get the size of the element
     inline static constexpr size_t size(const VertexElementDataType& data) noexcept 
@@ -234,10 +241,34 @@ protected:
                 return 0;
         }
     }
+    #endif
 
+} VertexLayout;
 
-};
+/**
+ * @brief create a new vertex layout
+ * 
+ * @param elements a pointer to an array of elements to create the layout from
+ * @param elementCount the amount of elements in the array
+ * @param layout a pointer to some form of storage for the layout (must have the size of sizeof(VertexLayout))
+ */
+void vertexLayout_Create(VertexElement* elements, uint64_t elementCount, VertexLayout* layout);
 
-#endif
+/**
+ * @brief get the size of a vertex that uses the inputted layout in bytes
+ * 
+ * @param layout a pointer to the layout element to quarry the information from
+ * @return uint64_t the size of a vertex in bytes
+ */
+uint64_t vertexLayout_GetVertexSize(VertexLayout* layout);
+
+/**
+ * @brief get the index of a specific element type
+ * 
+ * @param type the type to quarry the index for
+ * @param layout a pointer to the layout to quarry the layout from
+ * @return uint64_t the index of the layout with that type or UINT64_MAX if it was not found
+ */
+uint64_t vertexLayout_GetIndexOfElement(VertexElementType type, VertexLayout* layout);
 
 #endif

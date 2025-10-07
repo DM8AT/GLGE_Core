@@ -56,20 +56,20 @@ typedef struct s_Vertex {
 #if __cplusplus
 
 //define the layout of the minimum vertex
-inline const constexpr VertexLayout GLGE_VERTEX_LAYOUT_MINIMUM_VERTEX = {
+inline const constexpr s_VertexLayout GLGE_VERTEX_LAYOUT_MINIMUM_VERTEX = {
     VertexElement(VERTEX_ELEMENT_TYPE_POSITION, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
     VertexElement(VERTEX_ELEMENT_TYPE_NORMAL, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
 };
 
 //define the layout of the simple vertex
-inline const constexpr VertexLayout GLGE_VERTEX_LAYOUT_SIMPLE_VERTEX = {
+inline const constexpr s_VertexLayout GLGE_VERTEX_LAYOUT_SIMPLE_VERTEX = {
     VertexElement(VERTEX_ELEMENT_TYPE_POSITION, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
     VertexElement(VERTEX_ELEMENT_TYPE_NORMAL, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
     VertexElement(VERTEX_ELEMENT_TYPE_TEXTURE_COORDINATE0, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC2),
 };
 
 //define the layout of the normal vertex
-inline const constexpr VertexLayout GLGE_VERTEX_LAYOUT_VERTEX = {
+inline const constexpr s_VertexLayout GLGE_VERTEX_LAYOUT_VERTEX = {
     VertexElement(VERTEX_ELEMENT_TYPE_POSITION, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
     VertexElement(VERTEX_ELEMENT_TYPE_NORMAL, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
     VertexElement(VERTEX_ELEMENT_TYPE_TANGENT, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),

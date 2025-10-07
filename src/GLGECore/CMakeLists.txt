@@ -26,6 +26,9 @@ set(GLGE_CORE_SRC
     Filesystem/Encryption.cpp
 )
 
+# enable avx512. Required for Float16 on MSVC 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx512f")
+
 add_library(GLGE_CORE ${GLGE_CORE_SRC})
 
 # Compiler flags

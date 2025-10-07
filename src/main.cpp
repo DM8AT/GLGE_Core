@@ -43,6 +43,16 @@ void preprocess(String* content, void*)
 
 int main()
 {
+    constexpr VertexLayout layout = {
+        VertexElement(VERTEX_ELEMENT_TYPE_POSITION,            VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+        VertexElement(VERTEX_ELEMENT_TYPE_NORMAL,              VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+        VertexElement(VERTEX_ELEMENT_TYPE_TEXTURE_COORDINATE0, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC2),
+    };
+
+    std::cout << layout.getVertexSize() << "\n";
+
+    return 0;
+
     int level = -1;
     FileDecorator compress = {
         .preprocessor = glge_Decompress,

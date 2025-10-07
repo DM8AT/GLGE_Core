@@ -23,5 +23,7 @@
 #include "Application/Application.h"
 //include the filesystem
 #include "Filesystem/Filesystem.h"
+//include the geometry
+#include "Geometry/Geometry.h"
 
 #endif

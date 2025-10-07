@@ -38,4 +38,24 @@ typedef short unsigned int suint;
 //define a type for an unsigned char
 typedef unsigned char uchar;
 
+//define a type for a half float
+//check for clang or gcc
+#if defined(__clang__) || defined(__GNUC__)
+    //just us the pre-define float 16
+    typedef _Float16 half;
+//else, check for MSVC
+#elif defined(_MSC_VER)
+    //use the intrinsic float 16 stuff
+    #include <intrin.h>
+    #if defined(__AVX512FP16__)
+        typedef __fp16 half;
+    #else
+        //if the intrinsic mode is not supported, this is an error
+        #error "Float 16 is not supported - MSVC only supports Float 16 when AVX512 is supported"
+    #endif
+#else
+    //unknown compiler -> error
+    #error "Unsupported compiler for half-precision float"
+#endif
+
 #endif

@@ -43,11 +43,7 @@ void preprocess(String* content, void*)
 
 int main()
 {
-    constexpr VertexLayout layout = {
-        VertexElement(VERTEX_ELEMENT_TYPE_POSITION,            VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
-        VertexElement(VERTEX_ELEMENT_TYPE_NORMAL,              VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
-        VertexElement(VERTEX_ELEMENT_TYPE_TEXTURE_COORDINATE0, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC2),
-    };
+    constexpr VertexLayout layout = GLGE_VERTEX_LAYOUT_VERTEX;
 
     std::cout << layout.getVertexSize() << "\n";
 

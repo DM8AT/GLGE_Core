@@ -48,10 +48,34 @@ typedef struct s_Vertex {
     vec3 normal;
     //store the tangent of the vertex
     vec3 tangent;
-    //store the bitangent of the vertex
-    vec3 bitangent;
     //store the texture coordinate for the vertex
     vec2 tex;
 } Vertex;
+
+//for C++ define the constant vertex layouts
+#if __cplusplus
+
+//define the layout of the minimum vertex
+inline const constexpr VertexLayout GLGE_VERTEX_LAYOUT_MINIMUM_VERTEX = {
+    VertexElement(VERTEX_ELEMENT_TYPE_POSITION, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+    VertexElement(VERTEX_ELEMENT_TYPE_NORMAL, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+};
+
+//define the layout of the simple vertex
+inline const constexpr VertexLayout GLGE_VERTEX_LAYOUT_SIMPLE_VERTEX = {
+    VertexElement(VERTEX_ELEMENT_TYPE_POSITION, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+    VertexElement(VERTEX_ELEMENT_TYPE_NORMAL, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+    VertexElement(VERTEX_ELEMENT_TYPE_TEXTURE_COORDINATE0, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC2),
+};
+
+//define the layout of the normal vertex
+inline const constexpr VertexLayout GLGE_VERTEX_LAYOUT_VERTEX = {
+    VertexElement(VERTEX_ELEMENT_TYPE_POSITION, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+    VertexElement(VERTEX_ELEMENT_TYPE_NORMAL, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+    VertexElement(VERTEX_ELEMENT_TYPE_TANGENT, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC3),
+    VertexElement(VERTEX_ELEMENT_TYPE_TEXTURE_COORDINATE0, VERTEX_ELEMENT_DATA_TYPE_FLOAT_VEC2),
+};
+
+#endif
 
 #endif

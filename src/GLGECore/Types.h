@@ -51,12 +51,18 @@ typedef unsigned char uchar;
         typedef __fp16 half;
     #else
         //if the intrinsic mode is not supported, this is a warning (imitate a half using uint16_t's)
-        #warning "Float 16 is not supported - MSVC only supports Float 16 when AVX512 is supported"
+        #if defined(_MSC_VER)
+            #if _MSC_VER < 1934
+                #pragma message("MSVC version too old for AVX512FP16 (requires 19.34 or newer)")
+            #endif
+        #else
+            #warning "Non-MSVC compiler: make sure it supports AVX512FP16"
+        #endif
         typedef uint16_t half;
     #endif
 #else
     //unknown compiler -> warning + imitate half using uint16_t's
-    #warning "Unsupported compiler for half-precision float"
+    #pragma message ("Unsupported compiler for half-precision float")
     typedef uint16_t half;
 #endif
 

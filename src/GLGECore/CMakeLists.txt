@@ -30,8 +30,8 @@ add_library(GLGE_CORE ${GLGE_CORE_SRC})
 
 # enable avx512. Required for Float16 on MSVC 
 target_compile_options(GLGE_CORE PRIVATE
-    $<$<CXX_COMPILER_ID:GNU,Clang>:-mavx512f -mavx512dq -mavx512vl -mavx512bw>
-    $<$<CXX_COMPILER_ID:MSVC>:/arch:AVX512>
+    $<$<CXX_COMPILER_ID:MSVC>:/arch:AVX512FP16>
+    $<$<CXX_COMPILER_ID:GNU,Clang>:-mavx512fp16>
 )
 
 # Compiler flags

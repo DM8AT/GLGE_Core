@@ -58,6 +58,11 @@ public:
     {}
 
     /**
+     * @brief Destroy the Mesh
+     */
+    ~Mesh();
+
+    /**
      * @brief Get the Vertex Layout of the mesh
      * 
      * @return constexpr const VertexLayout& a constant reference to the vertex layout of the mesh
@@ -113,6 +118,71 @@ protected:
 
 };
 
+#else //else, define an opaque data structure
+
+//define an opaque (MSVC requires the unused byte) for a mesh
+typedef struct s_Mesh {byte unused;} Mesh;
+
 #endif
+
+/**
+ * @brief Construct a new Mesh
+ * 
+ * @param vertices a C array containing some form of vertex structure
+ * @param vertexCount the amount of vertices contained in the array
+ * @param layout the layout of a vertex element
+ * @param indices a pointer to an array of index types
+ * @param indexCount the amount of indices in the index array
+ * 
+ * @return a pointer to a new mesh
+ */
+Mesh* mesh_Create(void* vertices, uint64_t vertexCount, const VertexLayout* layout, index_t* indices, uint64_t indexCount);
+
+/**
+ * @brief delete an existing mesh instance
+ * 
+ * @param mesh a pointer to the mesh instance to delete
+ */
+void mesh_Delete(Mesh* mesh);
+
+/**
+ * @brief get the vertex layout of a mesh
+ * 
+ * @param mesh a pointer to the mesh to quarry the data from
+ * @return const VertexLayout* a pointer to the vertex layout of the mesh
+ */
+const VertexLayout* mesh_GetVertexLayout(Mesh* mesh);
+
+/**
+ * @brief get the vertices of a mesh
+ * 
+ * @param mesh a pointer to the mesh to quarry the data from
+ * @return void* a pointer to the vertices of the mesh
+ */
+void* mesh_GetVertices(Mesh* mesh);
+
+/**
+ * @brief get the amount of vertices of a mesh
+ * 
+ * @param mesh a pointer to the mesh to quarry the data from
+ * @return uint64_t the amount of vertices of the mesh
+ */
+uint64_t mesh_GetVertexCount(Mesh* mesh);
+
+/**
+ * @brief get the indices of a mesh
+ * 
+ * @param mesh a pointer to the mesh to quarry the data from
+ * @return index_t* a pointer to the indices of the mesh
+ */
+index_t* mesh_GetIndices(Mesh* mesh);
+
+/**
+ * @brief get the amount of indices of a mesh
+ * 
+ * @param mesh a pointer to the mesh to quarry the data from
+ * @return uint64_t get the amount of indices of a mesh
+ */
+uint64_t mesh_GetIndexCount(Mesh* mesh);
 
 #endif

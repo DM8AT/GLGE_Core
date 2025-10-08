@@ -43,9 +43,32 @@ void preprocess(String* content, void*)
 
 int main()
 {
-    constexpr VertexLayout layout = GLGE_VERTEX_LAYOUT_VERTEX;
+    SimpleVertex vertices[] = {
+        SimpleVertex{
+            .pos = vec3(0),
+            .normal = (0,1,0),
+            .tex = vec2(0,0)},
+        SimpleVertex{
+            .pos = vec3(1,0,0),
+            .normal = vec3(0,1,0),
+            .tex = vec2(1,0)},
+        SimpleVertex{
+            .pos = vec3(1,0,1),
+            .normal = vec3(0,1,0),
+            .tex = vec2(1,1)},
+        SimpleVertex{
+            .pos = vec3(0,0,1),
+            .normal = vec3(0,1,0),
+            .tex = vec2(0,1)}
+    };
 
-    std::cout << layout.getVertexSize() << "\n";
+    Mesh mesh(vertices, sizeof(vertices)/sizeof(*vertices), GLGE_VERTEX_LAYOUT_SIMPLE_VERTEX, {0,1,2, 1,2,3});
+
+    for (uint64_t i = 0; i < mesh.getVertexCount(); ++i)
+    {
+        SimpleVertex vert = mesh.getVertices<SimpleVertex>()[i];
+        std::cout << vert.pos << ", " << vert.normal << ", " << vert.tex << "\n";
+    }
 
     return 0;
 

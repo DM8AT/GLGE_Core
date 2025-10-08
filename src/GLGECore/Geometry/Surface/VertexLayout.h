@@ -48,6 +48,8 @@ typedef struct s_VertexLayout {
             //store the element in the element map at the correct index
             m_elements[index] = VertexElement(it->first, it->second);
         }
+        //calculate the cache size
+        __cache_vertex_size();
     }
 
     /**
@@ -72,6 +74,8 @@ typedef struct s_VertexLayout {
             //copy the elements over
             m_elements[i] = el;
         }
+        //calculate the cache size
+        __cache_vertex_size();
     }
 
     /**
@@ -95,6 +99,8 @@ typedef struct s_VertexLayout {
             //copy the element over
             m_elements[i] = elements[i];
         }
+        //calculate the cache size
+        __cache_vertex_size();
     }
 
     /**
@@ -102,14 +108,7 @@ typedef struct s_VertexLayout {
      * 
      * @return constexpr size_t the size of the vertex in bytes
      */
-    inline constexpr size_t getVertexSize() const noexcept {
-        //iterate over all elements and sum up the element size of each one
-        size_t sum = 0;
-        for (uint64_t i = 0; i < VERTEX_ELEMENT_TYPE_COUNT; ++i) {
-            sum += size(m_elements[i].data);
-        }
-        return sum;
-    }
+    inline constexpr size_t getVertexSize() const noexcept {return m_size;}
 
     /**
      * @brief Get the Index Of a specific element type
@@ -132,10 +131,23 @@ typedef struct s_VertexLayout {
 
     //store if something went wrong with the construction (example: multiple definitions for the same type)
     bool m_invalidConstruction = false;
+    //store the size of a whole vertex
+    size_t m_size = 0;
 
     //protected functions for C++
     #if __cplusplus
     protected:
+
+    //calculate and cache the size
+    inline constexpr void __cache_vertex_size() noexcept {
+        //iterate over all elements and sum up the element size of each one
+        size_t sum = 0;
+        for (uint64_t i = 0; i < VERTEX_ELEMENT_TYPE_COUNT; ++i) {
+            sum += size(m_elements[i].data);
+        }
+        //store the size in the size cache
+        m_size = sum;
+    }
 
     //get the size of the element
     inline static constexpr size_t size(const VertexElementDataType& data) noexcept 

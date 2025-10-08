@@ -15,5 +15,7 @@
 
 //include vertices
 #include "Vertex.h"
+//include meshes
+#include "Mesh.h"
 
 #endif

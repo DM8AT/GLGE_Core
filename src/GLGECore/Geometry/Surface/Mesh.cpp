@@ -36,7 +36,7 @@ Mesh::~Mesh()
 {
     //if the vertices exist, delete the array
     if (m_vertices) {
-        delete[] m_vertices;
+        delete[] (uint8_t*)m_vertices;
         m_vertices = NULL;
     }
 }

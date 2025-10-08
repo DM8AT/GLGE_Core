@@ -70,6 +70,9 @@ int main()
         std::cout << vert.pos << ", " << vert.normal << ", " << vert.tex << "\n";
     }
 
+    Sphere s(0, 1);
+    std::cout << s.getVolume() << "\n";
+
     return 0;
 
     int level = -1;

@@ -48,7 +48,7 @@ typedef struct s_Sphere
      * 
      * @return float the volume of the sphere
      */
-    inline constexpr float getVolume() const noexcept {return (4.f * M_PIf * (radius*radius*radius)) * (1.f/3.f);}
+    inline constexpr float getVolume() const noexcept {return (4.f * 3.141592f * (radius*radius*radius)) * (1.f/3.f);}
     
     /**
      * @brief Merge this sphere with another to form a tight bounding sphere

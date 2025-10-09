@@ -49,6 +49,41 @@ typedef struct s_Sphere
      * @return float the volume of the sphere
      */
     inline constexpr float getVolume() const noexcept {return (4.f * M_PIf * (radius*radius*radius)) * (1.f/3.f);}
+    
+    /**
+     * @brief Merge this sphere with another to form a tight bounding sphere
+     * 
+     * @param other the other sphere to merge with
+     */
+    inline void merge(const s_Sphere& other) noexcept
+    {
+        //compute a vector from one center to another and calculate the length of the vector
+        const vec3 centerVec = other.pos - pos;
+        const float dist = length(centerVec);
+
+        //If one sphere is fully inside the other, just expand if needed
+        if (radius >= dist + other.radius) {return;}
+
+        //just use the other sphere (this sphere is fully contained)
+        if (other.radius >= dist + radius)
+        {
+            //store the other sphere as this one
+            pos = other.pos;
+            radius = other.radius;
+            return;
+        }
+
+        //compute the new radius
+        const float newRadius = (dist + radius + other.radius) * 0.5f;
+        //calculate by how much the center needs to be shifted
+        const float shift = newRadius - radius;
+
+        //store the new position
+        if (dist > 0.f) {pos += (centerVec / dist) * shift;}
+
+        //store the new radius (don't forget this)
+        radius = newRadius;
+    }
 
     #endif
 

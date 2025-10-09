@@ -73,6 +73,10 @@ int main()
     Sphere s(0, 1);
     std::cout << s.getVolume() << "\n";
 
+    BVH<AABB, Mesh> bvh({mesh});
+
+    std::cout << bvh;
+
     return 0;
 
     int level = -1;

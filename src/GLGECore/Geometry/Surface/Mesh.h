@@ -26,6 +26,8 @@ typedef uint32_t index_t;
 
 //include resizable containers
 #include <vector>
+//include stuff for memcpy
+#include <cstring>
 
 /**
  * @brief store a simple mesh
@@ -33,6 +35,13 @@ typedef uint32_t index_t;
 class Mesh
 {
 public:
+
+    /**
+     * @brief Construct a new Mesh
+     * 
+     * The mesh is empty
+     */
+    Mesh() = default;
 
     /**
      * @brief Construct a new Mesh
@@ -58,9 +67,56 @@ public:
     {}
 
     /**
+     * @brief Construct a new Mesh by copying another mesh
+     * 
+     * @param other the other mesh to copy
+     */
+    Mesh(const Mesh& other)
+     : m_layout(other.m_layout),
+       m_vertexCount(other.m_vertexCount),
+       m_vertices(nullptr),
+       m_indices(other.m_indices)
+    {
+        //calculate the amount of bytes to allocate
+        size_t totalBytes = m_vertexCount * m_layout.m_size;
+        if (totalBytes > 0)
+        {
+            //if the amount is sane, allocate the new vertex array and copy the data over
+            m_vertices = new uint8_t[totalBytes];
+            memcpy(m_vertices, other.m_vertices, totalBytes);
+        }
+    }
+
+    /**
+     * @brief Construct a new Mesh by moving from another mesh
+     * 
+     * @param other the mesh to move from
+     */
+    Mesh(Mesh&& other) noexcept
+    : m_layout(std::move(other.m_layout)),
+      m_vertexCount(other.m_vertexCount),
+      m_vertices(other.m_vertices),
+      m_indices(std::move(other.m_indices))
+    {
+        //Null out other's data to avoid double deletion
+        //do not free it, this element now owns it
+        other.m_vertices = nullptr;
+        other.m_vertexCount = 0;
+    }
+
+
+    /**
      * @brief Destroy the Mesh
      */
     ~Mesh();
+
+    /**
+     * @brief Get the Bounding Volume of the mesh
+     * 
+     * @tparam T the type of bounding volume to create
+     * @return T the volume that contains the mesh
+     */
+    template <typename T> T getBoundingVolume() const noexcept;
 
     /**
      * @brief Get the Vertex Layout of the mesh

@@ -93,6 +93,37 @@ typedef struct s_AABB
      */
     inline constexpr float getVolume() const noexcept {return (max.x - min.x) * (max.y - min.y) * (max.z - min.z);}
 
+    /**
+     * @brief add a single point to the AABB
+     * 
+     */
+    inline constexpr void merge(const vec3& pos) noexcept {
+        //store the new minimum
+        min.x = (min.x < pos.x) ? min.x : pos.x;
+        min.y = (min.y < pos.y) ? min.y : pos.y;
+        min.z = (min.z < pos.z) ? min.z : pos.z;
+        //store the new maximum
+        max.x = (max.x > pos.x) ? max.x : pos.x;
+        max.y = (max.y > pos.y) ? max.y : pos.y;
+        max.z = (max.z > pos.z) ? max.z : pos.z;
+    }
+
+    /**
+     * @brief add another AABB to this one by including it
+     * 
+     * @param aabb a constant reference to the AABB to merge with this one
+     */
+    inline constexpr void merge(const s_AABB& aabb) noexcept {
+        //store the new minimum
+        min.x = (min.x < aabb.min.x) ? min.x : aabb.min.x;
+        min.y = (min.y < aabb.min.y) ? min.y : aabb.min.y;
+        min.z = (min.z < aabb.min.z) ? min.z : aabb.min.z;
+        //store the new maximum
+        max.x = (max.x > aabb.max.x) ? max.x : aabb.max.x;
+        max.y = (max.y > aabb.max.y) ? max.y : aabb.max.y;
+        max.z = (max.z > aabb.max.z) ? max.z : aabb.max.z;
+    }
+
     #endif
 
 } AABB;

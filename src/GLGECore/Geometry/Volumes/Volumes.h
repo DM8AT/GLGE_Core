@@ -17,5 +17,7 @@
 #include "AABB.h"
 //include spheres
 #include "Sphere.h"
+//include BVH's
+#include "BVH.h"
 
 #endif

@@ -124,10 +124,24 @@ typedef struct s_VertexLayout {
         return UINT64_MAX;
     }
 
+    /**
+     * @brief Get the Offset of a specific element in bytes from the start of the element
+     * 
+     * @param idx the index of the element to quarry the offset of
+     * @return constexpr uint64_t the offset in bytes from the start of the vertex to the requested element
+     */
+    inline constexpr uint64_t getOffsetOf(uint64_t idx) const noexcept {
+        //just loop and sum up all the elements
+        uint64_t offs = 0;
+        for (uint64_t i = 0; i < idx; ++i) 
+            {offs += size(m_elements[i].data);}
+        return offs;
+    }
+
     #endif
 
     //store a mapping from an index to a vertex element
-    std::array<VertexElement, VERTEX_ELEMENT_TYPE_COUNT> m_elements;
+    VertexElement m_elements[VERTEX_ELEMENT_TYPE_COUNT];
 
     //store if something went wrong with the construction (example: multiple definitions for the same type)
     bool m_invalidConstruction = false;

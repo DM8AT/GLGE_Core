@@ -15,8 +15,6 @@
 
 //include vectors
 #include "../../../GLGE_Math/GLGEMath.h"
-//include volumes
-#include "Volume.h"
 
 //include C++ vectors for utility
 #if __cplusplus
@@ -25,9 +23,6 @@
 
 //define a structure for axis aligned bounding boxes
 typedef struct s_AABB
-#if __cplusplus //for C++ add the volume class as a base class
-final : public Volume
-#endif
 {
     //store the minimum values for the box
     vec3 min;
@@ -42,7 +37,7 @@ final : public Volume
      * 
      * @param positions a list of positions to create the AABB from
      */
-    s_AABB(const std::vector<vec3>& positions) noexcept {
+    inline constexpr s_AABB(const std::vector<vec3>& positions) noexcept {
         for (size_t i = 0; i < positions.size(); ++i) {
             //store the per-axis minimum
             min.x = (min.x > positions[i].x) ? positions[i].x : min.x;
@@ -61,7 +56,7 @@ final : public Volume
      * @param positions a C array of 3D float vectors for positions
      * @param posCount the amount of positions in the C array
      */
-    s_AABB(vec3* positions, size_t posCount) noexcept {
+    inline constexpr s_AABB(vec3* positions, size_t posCount) noexcept {
         for (size_t i = 0; i < posCount; ++i) {
             //store the per-axis minimum
             min.x = (min.x > positions[i].x) ? positions[i].x : min.x;
@@ -80,14 +75,14 @@ final : public Volume
      * @param _min the value for the minim values
      * @param _max the values for the maximum values
      */
-    s_AABB(const vec3& _min, const vec3& _max)
+    inline constexpr s_AABB(const vec3& _min, const vec3& _max) noexcept
      : min(_min), max(_max)
     {}
 
     /**
      * @brief Construct a new AABB
      */
-    s_AABB()
+    inline constexpr s_AABB() noexcept
      : min(0), max(0)
     {}
 
@@ -96,7 +91,7 @@ final : public Volume
      * 
      * @return float the volume of the axis aligned bounding box
      */
-    virtual float getVolume() const noexcept final override {return (max.x - min.x) * (max.y - min.y) * (max.z - min.z);}
+    inline constexpr float getVolume() const noexcept {return (max.x - min.x) * (max.y - min.y) * (max.z - min.z);}
 
     #endif
 

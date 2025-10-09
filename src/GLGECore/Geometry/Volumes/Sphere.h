@@ -13,15 +13,10 @@
 #ifndef _GLGE_CORE_GEOMETRY_VOLUMES_SPHERE_
 #define _GLGE_CORE_GEOMETRY_VOLUMES_SPHERE_
 
-//include volumes
-#include "Volume.h"
 //include math types
 #include "../../../GLGE_Math/GLGEMath.h"
 
 typedef struct s_Sphere
-#if __cplusplus
-final : public Volume
-#endif
 {
     //the position of the sphere
     vec3 pos;
@@ -34,7 +29,7 @@ final : public Volume
     /**
      * @brief Construct a new Sphere
      */
-    s_Sphere()
+    inline constexpr s_Sphere() noexcept
      : pos(0), radius(0)
     {}
 
@@ -44,7 +39,7 @@ final : public Volume
      * @param _pos the position of the sphere
      * @param _radius the radius of the sphere
      */
-    s_Sphere(const vec3& _pos, const float _radius)
+    inline constexpr s_Sphere(const vec3& _pos, const float _radius) noexcept
      : pos(_pos), radius(_radius)
     {}
 
@@ -53,7 +48,7 @@ final : public Volume
      * 
      * @return float the volume of the sphere
      */
-    inline virtual float getVolume() const noexcept final override {return (4.f * M_PIf * (radius*radius*radius)) * (1.f/3.f);}
+    inline constexpr float getVolume() const noexcept {return (4.f * M_PIf * (radius*radius*radius)) * (1.f/3.f);}
 
     #endif
 

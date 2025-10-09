@@ -46,7 +46,7 @@
 template <typename Volume, typename Leaf, uint8_t MaxChildCount = 8> class BVH {
 public:
     //sanity check for the maximum child count
-    static_assert(MaxChildCount > 0, "MaxChildCount must be greater than 0");
+    static_assert(MaxChildCount > 1, "MaxChildCount must be greater than 1");
 
     /**
      * @brief store a single node for the BVH tree
@@ -86,7 +86,7 @@ public:
          * @param count number of children
          */
         inline constexpr Node(const Volume& volume, const size_t* children, uint8_t count)
-         : data(Internal(volume))
+         : data(Internal(volume)), childCount(count)
         {
             //sanity check the count
             assert(count > 0 && count <= MaxChildCount);
@@ -240,7 +240,8 @@ public:
             currentLevel = std::move(nextLevel);
         }
 
-        //return the root node
+        //return and store the root node
+        m_root = currentLevel[0];
         return currentLevel[0];
     }
 
@@ -251,7 +252,7 @@ public:
      * 
      * @param os the output stream to print to
      */
-    inline void print(std::ostream& os)
+    inline void print(std::ostream& os) const
     {
         //sanity check if the BVH is empty
         if (m_nodes.empty()) {
@@ -261,7 +262,7 @@ public:
 
         //if the tree is not empty, print the tree starting at the root node
         os << "BVH Tree:\n";
-        printNode(os, 0, 0);
+        printNode(os, m_root, 0);
     }
 
     /**
@@ -271,13 +272,13 @@ public:
      * @param index the index to start the printing at
      * @param depth the depth of elements to print. Used to set the indent correctly. 
      */
-    inline void printNode(std::ostream& os, size_t index, size_t depth) noexcept
+    inline void printNode(std::ostream& os, size_t index, size_t depth) const noexcept
     {
         //sanity check the index
-        GLGE_BVH_ASSERT(index < nodes.size());
+        GLGE_BVH_ASSERT(index < m_nodes.size());
 
         //get the requested node and add an indent
-        Node& node = m_nodes[index];
+        const Node& node = m_nodes[index];
         std::string indent(depth * 2, ' ');
 
         //if the node is a leaf node, print the index
@@ -295,10 +296,19 @@ public:
         }
     }
 
+    /**
+     * @brief Get the Root node
+     * 
+     * @return size_t the index of the root node
+     */
+    inline size_t getRoot() const noexcept {return m_root;}
+
 protected:
 
     //store the internal m_nodes
     std::vector<Node> m_nodes;
+    //store the root node
+    size_t m_root = SIZE_MAX;
 
     /**
      * @brief Create a Leaf new leaf
@@ -372,7 +382,7 @@ protected:
  * @return std::ostream& the filled output stream
  */
 template <typename Volume, typename Leaf, uint8_t MaxChildCount>
-std::ostream& operator<<(std::ostream& os, BVH<Volume, Leaf, MaxChildCount>& bvh) {
+std::ostream& operator<<(std::ostream& os, const BVH<Volume, Leaf, MaxChildCount>& bvh) {
     //print the BVH to the output stream and then return it
     bvh.print(os);
     return os;

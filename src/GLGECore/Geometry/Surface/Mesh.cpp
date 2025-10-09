@@ -198,6 +198,13 @@ template <> AABB Mesh::getBoundingVolume<AABB>() const noexcept {
     return ret;
 }
 
+template <> Sphere Mesh::getBoundingVolume<Sphere>() const noexcept {
+    //first, get the AABB
+    AABB box = getBoundingVolume<AABB>();
+    //then, create and return a sphere that encloses the whole box
+    return Sphere((box.min + box.max) * 0.5f, length((box.max - box.min) * 0.5f));
+}
+
 
 
 Mesh* mesh_Create(void* vertices, uint64_t vertexCount, const VertexLayout* layout, index_t* indices, uint64_t indexCount)

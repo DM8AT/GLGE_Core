@@ -16,6 +16,9 @@
 //include math types
 #include "../../../GLGE_Math/GLGEMath.h"
 
+/**
+ * @brief store a simple sphere
+ */
 typedef struct s_Sphere
 {
     //the position of the sphere
@@ -50,6 +53,31 @@ typedef struct s_Sphere
      */
     inline constexpr float getVolume() const noexcept {return (4.f * 3.141592f * (radius*radius*radius)) * (1.f/3.f);}
     
+    /**
+     * @brief add a point to the sphere volume
+     * 
+     * @param point the position of the point to add to the sphere
+     */
+    inline void merge(const vec3& point) noexcept
+    {
+        //get a vector from the center to the point and get the length
+        vec3 centerToPoint = point - pos;
+        float dist = length(centerToPoint);
+
+        //if point is already inside or on the sphere, no need to change anything
+        if (dist <= radius) return;
+
+        //otherwise, expand the sphere radius to include the new point
+        radius = (radius + dist) * 0.5f;
+
+        //shift the center towards the new point accordingly
+        float shift = radius - dist;
+        if (dist > 0.f)
+        {
+            pos += (centerToPoint / dist) * shift;
+        }
+    }
+
     /**
      * @brief Merge this sphere with another to form a tight bounding sphere
      * 

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.15)
-cmake_policy(SET CMP0111 OLD)
 
 project(GLGE_CORE_PROJ LANGUAGES CXX)
 
@@ -70,16 +69,16 @@ target_link_libraries(GLGE_CORE PUBLIC GLGE_BG)
 
 ## PugiXML
 set(CMAKE_CXX_FLAGS_DEBUG "-O2")
-add_subdirectory(${PROJECT_SOURCE_DIR}/../external/pugixml ${PROJECT_BINARY_DIR}/../external/pugixml)
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/pugixml ${PROJECT_BINARY_DIR}/external/pugixml)
 target_link_libraries(GLGE_CORE PRIVATE pugixml)
-target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/pugixml/src)
+target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/pugixml/src)
 
 ## Zlib
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
 set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../external/zlib ${PROJECT_BINARY_DIR}/../external/zlib)
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/zlib ${PROJECT_BINARY_DIR}/external/zlib)
 target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
-target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/../external/zlib)
+target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/zlib)
 ## Add OpenSSL
 find_package(OpenSSL QUIET)
 if (OpenSSL_FOUND)

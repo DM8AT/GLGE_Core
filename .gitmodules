@@ -4,9 +4,3 @@
 [submodule "src/GLGE_Math"]
 	path = src/GLGE_Math
 	url = https://github.com/DM8AT/GLGE_Math.git
-[submodule "zlib"]
-	path = src/GLGECore/external/zlib
-	url = https://github.com/madler/zlib.git
-[submodule "pugixml"]
-	path = src/GLGECore/external/pugixml
-	url = https://github.com/zeux/pugixml.git

@@ -17,5 +17,7 @@
 #include "Vertex.h"
 //include meshes
 #include "Mesh.h"
+//include triangles
+#include "Triangle.h"
 
 #endif

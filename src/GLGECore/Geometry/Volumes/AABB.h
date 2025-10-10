@@ -124,6 +124,17 @@ typedef struct s_AABB
         max.z = (max.z > aabb.max.z) ? max.z : aabb.max.z;
     }
 
+    /**
+     * @brief print an axis aligned bounding box into an output stream
+     * 
+     * @param os the output stream to print to
+     * @param aabb the axis aligned bounding box to print
+     * @return std::ostream& the filled output stream
+     */
+    inline friend std::ostream& operator<<(std::ostream& os, const s_AABB& aabb) noexcept {
+        return os << "{min: " << aabb.min << " | max: " << aabb.max << "}";
+    }
+
     #endif
 
 } AABB;

@@ -73,10 +73,10 @@ int main()
     Sphere s(0, 1);
     std::cout << s.getVolume() << "\n";
 
-    std::vector<Mesh> meshes;
-    meshes.reserve(12);
-    for (uint64_t i = 0; i < meshes.capacity(); ++i) {meshes.push_back(mesh);}
-    BVH<AABB, Mesh, 8> bvh(meshes);
+    std::vector<Triangle> tries;
+    tries.reserve(12);
+    for (uint64_t i = 0; i < tries.capacity(); ++i) {tries.emplace_back(vec3(0), vec3(1), vec3(0,1,0));}
+    BVH<AABB, Triangle, 8> bvh(tries);
 
     std::cout << bvh;
 

@@ -27,6 +27,7 @@ set(GLGE_CORE_SRC
 
     Geometry/Surface/VertexLayout.cpp
     Geometry/Surface/Mesh.cpp
+    Geometry/Surface/Triangle.cpp
 )
 
 add_library(GLGE_CORE ${GLGE_CORE_SRC})

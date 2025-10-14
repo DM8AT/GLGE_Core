@@ -41,8 +41,49 @@ void preprocess(String* content, void*)
     }
 }
 
+class SimpleUpdate : public System<SimpleUpdate> {
+public:
+    
+    SimpleUpdate()
+     : System<SimpleUpdate>({
+            .parallel = true,
+            .active = true
+        })
+    {}
+
+    void operator()(const Transform&) {}
+
+    virtual void onInit() noexcept override {}
+    virtual void onUpdate() noexcept override {}
+    virtual void onDeinit() noexcept override {}
+};
+
+void perObjectFunction(const Transform&) {}
+
 int main()
 {
+    Scene scene = "Main Scene";
+    scene.addSystem<SimpleUpdate>();
+    std::vector<Object> objs;
+
+    {
+        ScopeTimer s = "Object Creation";
+        objs.reserve(1E2);
+        objs = scene.createObjects<Transform>(objs.capacity(), "Hi");
+    }
+
+    {
+        ScopeTimer s = "Systems";
+        scene.update();
+    }
+
+    {
+        ScopeTimer s = "Per object function";
+        scene.forAllObjects(perObjectFunction, true);
+    }
+
+    return 0;
+
     SimpleVertex vertices[] = {
         SimpleVertex{
             .pos = vec3(0),

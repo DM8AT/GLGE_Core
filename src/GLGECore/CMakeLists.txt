@@ -27,6 +27,9 @@ set(GLGE_CORE_SRC
     Geometry/Surface/VertexLayout.cpp
     Geometry/Surface/Mesh.cpp
     Geometry/Surface/Triangle.cpp
+
+    Geometry/Structure/Transform.cpp
+    Geometry/Structure/ECS/Scene.cpp
 )
 
 add_library(GLGE_CORE ${GLGE_CORE_SRC})
@@ -89,3 +92,8 @@ else()
     # Fatal error - OpenSSL is required
     message(FATAL_ERROR "OpenSSL not found. Please install it via a package manager (vcpkg / apt / brew / choco / conan).")
 endif()
+
+## Mustache ECS
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/mustache ${PROJECT_BINARY_DIR}/external/mustache)
+target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/mustache/src)
+target_link_libraries(GLGE_CORE PUBLIC mustache)

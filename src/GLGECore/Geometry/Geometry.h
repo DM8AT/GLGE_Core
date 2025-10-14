@@ -17,5 +17,7 @@
 #include "Surface/Surface.h"
 //include the volume stuff
 #include "Volumes/Volumes.h"
+//include the structure related stuff
+#include "Structure/Structure.h"
 
 #endif

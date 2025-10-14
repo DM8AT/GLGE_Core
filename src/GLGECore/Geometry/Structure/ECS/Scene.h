@@ -15,6 +15,8 @@
 
 //include objects
 #include "Object.h"
+//transforms are added to all objects by default
+#include "../Transform.h"
 
 //for C++ create a scene class
 #if __cplusplus
@@ -83,14 +85,14 @@ public:
     /**
      * @brief Create a new Object
      * 
-     * @tparam Components a list of components to add to the entity. Every entity has at least an std::string storing the object's name
+     * @tparam Components a list of components to add to the entity. Every entity has at least an String storing the object's name
      * @param nameSuggestion the name SUGGESTION for the object
      * @param parent a pointer to the parent or NULL if the root should be used
      * @return Object* a pointer to the new object
      */
-    template <typename ...Components> inline Object createObject(const std::string& nameSuggestion, Object parent = NULL) noexcept {
+    template <typename ...Components> inline Object createObject(const String& nameSuggestion, Object parent = NULL) noexcept {
         //check if the name exists. If it does, get a number to add to the end to make it unique
-        std::string name = nameSuggestion;
+        String name = nameSuggestion;
         if (m_objects.find(name) != m_objects.end())
         {
             //Name collision -> generate unique name from set
@@ -110,8 +112,8 @@ public:
             name = nameSuggestion + "(" + std::to_string(index) + ")";
         }
         //store the object and add it to the internal world
-        mustache::Entity ent = m_world.entities().create<std::string, Components...>();
-        *(m_world.entities().getComponent<std::string>(ent)) = name;
+        mustache::Entity ent = m_world.entities().create<String, Transform, Components...>();
+        *(m_world.entities().getComponent<String>(ent)) = name;
         //add the new object to the object mapping and parent
         RawObject* par = (RawObject*)((parent) ? ((RawObject*)parent) : &m_root);
         m_objects.emplace(name, RawObject{
@@ -153,7 +155,7 @@ public:
         //now, create all objects
         for (size_t i = 0; i < instances; ++i) {
             //check if the name exists. If it does, get a number to add to the end to make it unique
-            std::string name = nameSuggestion;
+            String name = nameSuggestion;
             if (m_objects.find(name) != m_objects.end())
             {
                 //Name collision -> generate unique name from set
@@ -174,8 +176,8 @@ public:
             }
 
             //store the object and add it to the internal world
-            mustache::Entity ent = m_world.entities().create<std::string, Components...>();
-            *(m_world.entities().getComponent<std::string>(ent)) = name;
+            mustache::Entity ent = m_world.entities().create<String, Transform, Components...>();
+            *(m_world.entities().getComponent<String>(ent)) = name;
             //add the new object to the object mapping and parent
             m_objects.emplace(name, RawObject{
                 .name = name,

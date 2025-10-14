@@ -51,14 +51,18 @@ public:
         })
     {}
 
-    void operator()(const Transform&) {}
+    void operator()(Transform& trans) {
+        trans.pos.x = 5;
+    }
 
     virtual void onInit() noexcept override {}
     virtual void onUpdate() noexcept override {}
     virtual void onDeinit() noexcept override {}
 };
 
-void perObjectFunction(const Transform&) {}
+void perObjectFunction(Transform& trans) {
+    trans.pos.y += 5;
+}
 
 int main()
 {
@@ -68,8 +72,8 @@ int main()
 
     {
         ScopeTimer s = "Object Creation";
-        objs.reserve(1E2);
-        objs = scene.createObjects<Transform>(objs.capacity(), "Hi");
+        objs.reserve(1E6);
+        objs = scene.createObjects(objs.capacity(), "Hi");
     }
 
     {
@@ -79,7 +83,7 @@ int main()
 
     {
         ScopeTimer s = "Per object function";
-        scene.forAllObjects(perObjectFunction, true);
+        scene.forAllObjects(perObjectFunction, false);
     }
 
     return 0;

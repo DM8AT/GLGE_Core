@@ -94,6 +94,7 @@ else()
 endif()
 
 ## Mustache ECS
+set(MUSTACHE_WARNINGS_AS_ERROR OFF CACHE BOOL "Disable -Werror in mustache submodule")
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/mustache ${PROJECT_BINARY_DIR}/external/mustache)
 target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/mustache/src)
 target_link_libraries(GLGE_CORE PUBLIC mustache)

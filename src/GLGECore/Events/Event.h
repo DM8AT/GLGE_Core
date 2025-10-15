@@ -36,7 +36,7 @@ typedef struct s_EventType {
      * @param _library a string naming the library the event came from
      * @param _event the identifier of the event
      */
-    s_EventType(const char* _library, uint64_t _event)
+    inline constexpr s_EventType(const char* _library, uint64_t _event) noexcept
      : library(_library), event(_event)
     {}
 

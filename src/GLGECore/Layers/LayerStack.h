@@ -73,6 +73,8 @@ typedef struct s_LayerStackElement {
 
 /**
  * @brief store a stack of all bound layers
+ * 
+ * @warning the layer stack does not own ANY layers. All layers must be freed externally. 
  */
 class LayerStack
 {
@@ -189,8 +191,6 @@ public:
 
     /**
      * @brief add a new layer to the layer stack
-     * 
-     * @warning to add the layer, the combination of library and name must be unique in the stack
      * 
      * @param layer a constant reference to a layer stack element to add to the layer stack
      * @return true : the layer was added successfully

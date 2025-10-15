@@ -129,20 +129,6 @@ LayerStack::~LayerStack()
     //if the element is currently started, call the shutdown
     if (m_isStarted) {signalShutdown();}
 
-    //iterate over all layers
-    uint64_t size = m_layers.byteSize / m_layers.elementSize;
-    //clean the layers up
-    for (uint64_t i = 0; i < size; ++i)
-    {
-        //get the element to clean up
-        LayerStackElement& el = *(((LayerStackElement*)m_layers.ptr) + i);
-        //call the correct destructor
-        if (el.isLayerBase)
-        {delete (LayerBase*)el.layer;}
-        else
-        {delete (Layer*)el.layer;}
-        el.layer = NULL;
-    }
     //clean up the vector
     m_layers.clear();
 }
@@ -247,9 +233,6 @@ const LayerStackElement* LayerStack::getElement(size_t index) const noexcept
 
 bool LayerStack::addNewLayer(Layer* layer)
 {
-    //check if the layer is NOT found
-    if (getLayerIndex(layer->type.library, layer->type.name) != SIZE_MAX) {return false;}
-
     //add the new layer
     LayerStackElement el = LayerStackElement(layer);
     m_layers.push_back(&el);

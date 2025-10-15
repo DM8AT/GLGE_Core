@@ -297,14 +297,6 @@ bool LayerStack::removeLayer(size_t index)
 {
     //sanity check -> stop if it is out of bounds
     if ((index * m_layers.elementSize) >= m_layers.byteSize) {return false;}
-    //get the element to clean up
-    LayerStackElement& el = *(((LayerStackElement*)m_layers.ptr) + index);
-    //call the correct destructor
-    if (el.isLayerBase)
-    {delete (LayerBase*)el.layer;}
-    else
-    {delete (Layer*)el.layer;}
-    el.layer = NULL;
     //just erase the element
     m_layers.erase(index);
     //success

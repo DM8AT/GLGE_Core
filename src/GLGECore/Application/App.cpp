@@ -19,7 +19,7 @@
 //include the error handling
 #include "../../GLGE_BG/Debugging/Logging/__BG_SimpleDebug.h"
 
-std::unordered_map<std::thread::id, App*> App::ms_appList = {};
+std::unordered_map<std::thread::id, App*> App::ms_appList;
 
 /**
  * @brief load the app info structure from a document file

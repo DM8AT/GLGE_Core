@@ -61,24 +61,6 @@ typedef struct s_LayerCallbacks {
     //a function to call for the app shutdown
     void (*func_shutdownCallback)();
 
-    //add C++ constructors
-    #if __cplusplus
-
-    /**
-     * @brief Construct a new Layer Callback structure
-     * 
-     * @param _func_updateCallback the function to call for each update
-     * @param _func_startupCallback the function to call on startup
-     * @param _func_shutdownCallback the function to call on shutdown
-     * @param _next a pointer to a structure that extends this structure
-     */
-    s_LayerCallbacks(void (*_func_updateCallback)() = 0, void (*_func_startupCallback)() = 0, void (*_func_shutdownCallback)() = 0, void* _next = 0)
-     : next(_next), func_updateCallback(_func_updateCallback), 
-       func_startupCallback(_func_startupCallback), func_shutdownCallback(_func_shutdownCallback)
-    {}
-
-    #endif
-
 } LayerCallbacks;
 
 /**

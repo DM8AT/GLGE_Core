@@ -60,7 +60,7 @@ public:
     virtual void onDeinit() noexcept override {}
 };
 
-template <typename T> struct Foo {Foo();}
+template <typename T> struct Foo {Foo();};
 
 void perObjectFunction(Transform& trans) {
     trans.pos.y += 5;

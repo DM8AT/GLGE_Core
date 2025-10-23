@@ -151,6 +151,7 @@ private:
         //return the correct string depending on the compiler
         //throw an error if the compiler is not supported
         #if defined(_MSC_VER)
+            #pragma message __FUNCSIG__
             return __FUNCSIG__;
         #elif defined(__clang__) || defined(__GNUC__)
             return __PRETTY_FUNCTION__;

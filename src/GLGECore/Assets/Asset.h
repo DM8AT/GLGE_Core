@@ -117,7 +117,10 @@ public:
                 }
             #elif defined(_MSC_VER)
                 //2) MSVC layout is "... func_name<type>(...)" so extract the type between '<' and the matching '>'
-                const std::size_t lt = cexpr_find(pf, "<");
+                //first, find the last < symbol before the initializer list (known to be void)
+                const std::size_t paren = cexpr_find(pf, "(void)");
+                const std::size_t lt = cexpr_find_last_of(pf.substr(0, paren), "<");
+                //then extract the string from that symbol to the corresponding > symbol
                 if (lt != std::string_view::npos) {
                     //store the current nesting depth
                     std::size_t depth = 0;

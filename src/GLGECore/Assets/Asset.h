@@ -92,32 +92,36 @@ public:
      */
     template<typename T>
     static inline consteval std::string_view type_name() noexcept {
-        //first, get the raw name of the function with the template name
-        constexpr std::string_view pf = raw_func_name<T>();
+        //use compile time caching
+        static constexpr std::string_view result = [] {
+            //first, get the raw name of the function with the template name
+            constexpr std::string_view pf = raw_func_name<T>();
 
-        //check for different compiler semantics that are commonly used
+            //check for different compiler semantics that are commonly used
 
-        //1) GCC/Clang usually include "T = <typename>" in the pretty function
-        //so search for something that resembles this structure and extract the type name that is stored in between
-        constexpr std::string_view marker1 = "T = ";
-        if (const std::size_t pos = cexpr_find(pf, marker1); pos != std::string_view::npos) {
-            const std::size_t start = pos + marker1.size();
-            //usually ends with ']' or ';' or ',' depending on compiler context, check common terminators
-            //so make sure to find the last termination character
-            const char terminators[] = "];,";
-            const std::size_t end = cexpr_find_one_of(pf, terminators, start);
-            //sanity check
-            if (end != std::string_view::npos && end > start)
-            {return pf.substr(start, end - start);}
-            //else return to end
-            return pf.substr(start);
-        }
+            //1) GCC/Clang usually include "T = <typename>" in the pretty function
+            //so search for something that resembles this structure and extract the type name that is stored in between
+            constexpr std::string_view marker1 = "T = ";
+            if (const std::size_t pos = cexpr_find(pf, marker1); pos != std::string_view::npos) {
+                const std::size_t start = pos + marker1.size();
+                //usually ends with ']' or ';' depending on compiler context, check common terminators
+                //make sure not to check for > or , as they may appear in templated type names
+                const char terminators[] = "];";
+                const std::size_t end = cexpr_find_one_of(pf, terminators, start);
+                //sanity check
+                if (end != std::string_view::npos && end > start)
+                {return pf.substr(start, end - start);}
+                //else return to end
+                return pf.substr(start);
+            }
 
-        //2) Just ignore MSVC, it is not easy to implement
-        
-        //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('
-        //This is less robust; final fallback returns entire pretty function string.
-        return pf;
+            //2) Just ignore MSVC, it is not easy to implement
+            
+            //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('
+            //This is less robust; final fallback returns entire pretty function string.
+            return pf;
+        }();
+        return result;
     }
 
 private:
@@ -129,7 +133,7 @@ private:
      * @return constexpr std::string_view the name of the templated function
      */
     template <typename T>
-    static consteval std::string_view raw_func_name() noexcept {
+    static inline consteval std::string_view raw_func_name() noexcept {
         //return the correct string depending on the compiler
         //throw an error if the compiler is not supported
         #if defined(_MSC_VER)
@@ -150,7 +154,7 @@ private:
      * @param start the starting position to search at
      * @return constexpr size_t the position of the found element or std::string_view::npos if the element was not found
      */
-    static consteval size_t cexpr_find(std::string_view s, std::string_view needle, std::size_t start = 0) noexcept {
+    static inline consteval size_t cexpr_find(std::string_view s, std::string_view needle, std::size_t start = 0) noexcept {
         //sanity check if the needle would even fit into the string
         if (needle.empty() || s.size() < needle.size()) return std::string_view::npos;
         //iterate over all elements the element could possibly be
@@ -177,7 +181,7 @@ private:
      * @param start the element to start the search at
      * @return constexpr size_t the position of the found element or std::string_view::npos if it was not found
      */
-    static consteval std::size_t cexpr_find_one_of(std::string_view s, const char* chars, std::size_t start = 0) noexcept {
+    static inline consteval std::size_t cexpr_find_one_of(std::string_view s, const char* chars, std::size_t start = 0) noexcept {
         //iterate over all elements to find it
         for (std::size_t i = start; i < s.size(); ++i) {
             //check for the symbols
@@ -198,12 +202,13 @@ private:
      * @param start the element to start the search at
      * @return consteval size_t the position of the found element or std::string_view::npos
      */
-    static consteval size_t cexpr_find_last_of(std::string_view s, const char* chars, std::size_t start = std::string_view::npos) noexcept {
+    static inline consteval size_t cexpr_find_last_of(std::string_view s, const char* chars, std::size_t start = std::string_view::npos) noexcept {
         //sanity check if the string is filled
         if (s.empty()) return std::string_view::npos;
 
         //start from end if no start position given and the loop till the loop returns or till the start is hit
-        for (size_t i = (start == std::string_view::npos ? s.size() : start); i-- > 0; )
+        size_t i = (start == std::string_view::npos ? s.size() : start);
+        while (i-- > 0)
         {
             for (const char* p = chars; *p; ++p) {
                 if (s[i] == *p)
@@ -224,7 +229,7 @@ private:
      * @return consteval uint64_t the hash of the type
      */
     template <typename T>
-    static consteval uint64_t typeHash() noexcept {
+    static inline consteval uint64_t typeHash() noexcept {
         //get the type name
         constexpr std::string_view name = type_name<T>();
         //FNV-1a 64-bit hash
@@ -240,7 +245,7 @@ private:
      * @param hash the hash to fold down
      * @return constexpr AssetTypeID the 32 bit result
      */
-    static consteval AssetTypeID fold64to32(uint64_t hash) noexcept {
+    static inline consteval AssetTypeID fold64to32(uint64_t hash) noexcept {
         //fold down to reduce the likelihood of a collision
         hash ^= hash >> 33;
         hash *= 0xff51afd7ed558ccdULL;

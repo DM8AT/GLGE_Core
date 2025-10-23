@@ -99,27 +99,59 @@ public:
 
             //check for different compiler semantics that are commonly used
 
-            //1) GCC/Clang usually include "T = <typename>" in the pretty function
-            //so search for something that resembles this structure and extract the type name that is stored in between
-            constexpr std::string_view marker1 = "T = ";
-            if (const std::size_t pos = cexpr_find(pf, marker1); pos != std::string_view::npos) {
-                const std::size_t start = pos + marker1.size();
-                //usually ends with ']' or ';' depending on compiler context, check common terminators
-                //make sure not to check for > or , as they may appear in templated type names
-                const char terminators[] = "];";
-                const std::size_t end = cexpr_find_one_of(pf, terminators, start);
-                //sanity check
-                if (end != std::string_view::npos && end > start)
-                {return pf.substr(start, end - start);}
-                //else return to end
-                return pf.substr(start);
+            #if defined(__clang__) || defined(__GNUC__)
+                //1) GCC/Clang usually include "T = <typename>" in the pretty function
+                //so search for something that resembles this structure and extract the type name that is stored in between
+                constexpr std::string_view marker1 = "T = ";
+                if (const std::size_t pos = cexpr_find(pf, marker1); pos != std::string_view::npos) {
+                    const std::size_t start = pos + marker1.size();
+                    //usually ends with ']' or ';' depending on compiler context, check common terminators
+                    //make sure not to check for > or , as they may appear in templated type names
+                    const char terminators[] = "];";
+                    const std::size_t end = cexpr_find_one_of(pf, terminators, start);
+                    //sanity check
+                    if (end != std::string_view::npos && end > start)
+                    {return pf.substr(start, end - start);}
+                    //else return to end
+                    return pf.substr(start);
+                }
+            #elif defined(_MSC_VER)
+            
+            //2) MSVC layout is (...) func_name<type name>(...) so extract the type names from in between the < ... >
+            //but make sure to count how many opening < where found to respect template arguments
+            const std::size_t lt = cexpr_find(pf, "<");
+            //sanity check
+            if (lt != std::string_view::npos) {
+                //store the current nesting depth
+                std::size_t depth = 0;
+                //store the length of the type name
+                std::size_t gt = std::string_view::npos;
+                //iterate till the correct closing bracket is found
+                //keep track of the depth in the loop to not early out
+                for (std::size_t i = lt + 1; i < pf.size(); ++i) {
+                    const char c = pf[i];
+                    if (c == '<') ++depth;
+                    else if (c == '>') {
+                        //check if the correct closing bracket is found
+                        //if it is, return. Else, continue counting
+                        if (depth == 0) {
+                            gt = i; 
+                            break;
+                        }
+                        else 
+                        {--depth};
+                    }
+                }
+                //sanity check before returning the name
+                if (gt != std::string_view::npos && gt > lt + 1)
+                {return pf.substr(lt + 1, gt - (lt + 1));}
             }
 
-            //2) Just ignore MSVC, it is not easy to implement
             
-            //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('
-            //This is less robust; final fallback returns entire pretty function string.
-            return pf;
+            #else
+                //3) Unsupported compiler -> error
+                #error The compiler you are compiling on is not supported. Please contact the GLGE maintainers.
+            #endif
         }();
         return result;
     }

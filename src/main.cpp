@@ -60,16 +60,12 @@ public:
     virtual void onDeinit() noexcept override {}
 };
 
-template <uint64_t T> struct Foo {Foo();};
-
 void perObjectFunction(Transform& trans) {
     trans.pos.y += 5;
 }
 
 int main()
 {
-    Foo<AssetTypeRegistry::getID<int>()> foo;
-
     Scene scene = "Main Scene";
     scene.addSystem<SimpleUpdate>();
     std::vector<Object> objs;

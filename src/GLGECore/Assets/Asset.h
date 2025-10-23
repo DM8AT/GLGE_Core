@@ -92,7 +92,7 @@ public:
      */
     template<typename T>
     static inline consteval std::string_view type_name() noexcept {
-        //use compile time caching
+        //use compile time caching//use compile time caching
         static constexpr std::string_view result = [] {
             //first, get the raw name of the function with the template name
             constexpr std::string_view pf = raw_func_name<T>();
@@ -111,47 +111,38 @@ public:
                     const std::size_t end = cexpr_find_one_of(pf, terminators, start);
                     //sanity check
                     if (end != std::string_view::npos && end > start)
-                    {return pf.substr(start, end - start);}
+                        return pf.substr(start, end - start);
                     //else return to end
                     return pf.substr(start);
                 }
             #elif defined(_MSC_VER)
-            
-            //2) MSVC layout is (...) func_name<type name>(...) so extract the type names from in between the < ... >
-            //but make sure to count how many opening < where found to respect template arguments
-            const std::size_t lt = cexpr_find(pf, "<");
-            //sanity check
-            if (lt != std::string_view::npos) {
-                //store the current nesting depth
-                std::size_t depth = 0;
-                //store the length of the type name
-                std::size_t gt = std::string_view::npos;
-                //iterate till the correct closing bracket is found
-                //keep track of the depth in the loop to not early out
-                for (std::size_t i = lt + 1; i < pf.size(); ++i) {
-                    const char c = pf[i];
-                    if (c == '<') ++depth;
-                    else if (c == '>') {
-                        //check if the correct closing bracket is found
-                        //if it is, return. Else, continue counting
-                        if (depth == 0) {
-                            gt = i; 
-                            break;
+                //2) MSVC layout is "... func_name<type>(...)" so extract the type between '<' and the matching '>'
+                const std::size_t lt = cexpr_find(pf, "<");
+                if (lt != std::string_view::npos) {
+                    //store the current nesting depth
+                    std::size_t depth = 0;
+                    //store the position of the matching '>'
+                    std::size_t gt = std::string_view::npos;
+                    //iterate until the correct closing bracket is found, tracking nested '<'
+                    for (std::size_t i = lt + 1; i < pf.size(); ++i) {
+                        const char c = pf[i];
+                        if (c == '<') ++depth;
+                        else if (c == '>') {
+                            if (depth == 0) { gt = i; break; }
+                            else --depth;
                         }
-                        else 
-                        {--depth};
                     }
+                    //sanity check before returning the name
+                    if (gt != std::string_view::npos && gt > lt + 1)
+                        return pf.substr(lt + 1, gt - (lt + 1));
                 }
-                //sanity check before returning the name
-                if (gt != std::string_view::npos && gt > lt + 1)
-                {return pf.substr(lt + 1, gt - (lt + 1));}
-            }
-
-            
             #else
                 //3) Unsupported compiler -> error
-                #error The compiler you are compiling on is not supported. Please contact the GLGE maintainers.
+                #error "The compiler you are compiling on is not supported. Please contact the GLGE maintainers."
             #endif
+
+            // final fallback: return the whole pretty/function string if parsing failed
+            return pf;
         }();
         return result;
     }

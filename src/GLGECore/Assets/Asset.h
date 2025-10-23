@@ -50,11 +50,6 @@ typedef struct s_AssetData {
 #include <typeindex>
 //get limits of types
 #include <limits>
-//add arrays
-#include <array>
-
-//add constexpr capable hash maps
-#include ""
 
 /**
  * @brief a class to store and handle the mapping from actual types to type ids
@@ -62,8 +57,6 @@ typedef struct s_AssetData {
 class AssetTypeRegistry final {
 public:
 
-    //store the maximum number of asset types that are allowed
-    static constexpr size_t MAX_TYPES = 512;
     //store an ID to notify that it is invalid
     static constexpr AssetTypeID INVALID_ID = std::numeric_limits<AssetTypeID>::max();
 
@@ -74,16 +67,11 @@ public:
      * @return consteval AssetTypeID the ID of the asset's type
      */
     template <typename T>
-    static consteval AssetTypeID getID() noexcept {
-        //get the type hash of the type
+    static inline consteval AssetTypeID getID() noexcept {
+        //get the hash of the type
         constexpr uint64_t hash = typeHash<T>();
-        //maybe it allready exists
-        constexpr auto ptr = table.find(hash);
-        //check if it allready exists. If it does, return it
-        if (ptr) {return *ptr;}
-        //else, make sure that there is enough space and then add it
-        static_assert(next_ID < MAX_TYPES, "AssetTypeRegistry overflow: too many registered asset types");
-        return registerType<T>();
+        //fold down to AssetTypeID type using hash folding
+        return fold64to32(hash);
     }
 
     /**
@@ -93,10 +81,157 @@ public:
      * @return consteval uint64_t the hash of the type
      */
     template <typename T>
-    static consteval uint64_t getHash() noexcept
+    static inline consteval uint64_t getHash() noexcept
     {return typeHash<T>();}
 
+    /**
+     * @brief get the name of a type
+     * 
+     * @tparam T the type to get the name from
+     * @return consteval std::string_view the name of the type
+     */
+    template<typename T>
+    static inline consteval std::string_view type_name() noexcept {
+        //first, get the raw name of the function with the template name
+        constexpr std::string_view pf = raw_func_name<T>();
+
+        //check for different compiler semantics that are commonly used
+
+        //1) GCC/Clang usually include "T = <typename>" in the pretty function
+        //so search for something that resembles this structure and extract the type name that is stored in between
+        constexpr std::string_view marker1 = "T = ";
+        if (const std::size_t pos = cexpr_find(pf, marker1); pos != std::string_view::npos) {
+            const std::size_t start = pos + marker1.size();
+            //usually ends with ']' or ';' or ',' depending on compiler context, check common terminators
+            //so make sure to find the last termination character
+            const char terminators[] = "];,";
+            const std::size_t end = cexpr_find_one_of(pf, terminators, start);
+            //sanity check
+            if (end != std::string_view::npos && end > start)
+            {return pf.substr(start, end - start);}
+            //else return to end
+            return pf.substr(start);
+        }
+
+        //2) MSVC uses the form "... raw_func_name<int>(... )" so find < ... >
+        //and extract the type name in between
+        const std::size_t lt = cexpr_find(pf, "<");
+        if (lt != std::string_view::npos) {
+            //handle nested templates by finding the *matching* '>'
+            std::size_t depth = 0;
+            std::size_t gt = std::string_view::npos;
+            for (std::size_t i = lt + 1; i < pf.size(); ++i) {
+                const char c = pf[i];
+                if (c == '<') ++depth;
+                else if (c == '>') {
+                    if (depth == 0) { gt = i; break; }
+                    else --depth;
+                }
+            }
+            //make sure that the positions are all sane
+            if (gt != std::string_view::npos && gt > lt + 1)
+            {return pf.substr(lt + 1, gt - (lt + 1));}
+        }
+
+        //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('
+        //This is less robust; final fallback returns entire pretty function string.
+        return pf;
+    }
+
 private:
+
+    /**
+     * @brief get the raw name of a function name
+     * 
+     * @tparam T the type to get the function for
+     * @return constexpr std::string_view the name of the templated function
+     */
+    template <typename T>
+    static consteval std::string_view raw_func_name() noexcept {
+        //return the correct string depending on the compiler
+        //throw an error if the compiler is not supported
+        #if defined(_MSC_VER)
+            return __FUNCSIG__;
+        #elif defined(__clang__) || defined(__GNUC__)
+            return __PRETTY_FUNCTION__;
+        #else
+            //error - unsupported compiler
+            #error "Unsupported compiler. Please inform the maintainer of GLGE to add the required compiler"
+        #endif
+    }
+
+    /**
+     * @brief Helper: constexpr find substring (returns npos if not found)
+     * 
+     * @param s the string view to search
+     * @param needle the needle to find
+     * @param start the starting position to search at
+     * @return constexpr size_t the position of the found element or std::string_view::npos if the element was not found
+     */
+    static consteval size_t cexpr_find(std::string_view s, std::string_view needle, std::size_t start = 0) noexcept {
+        //sanity check if the needle would even fit into the string
+        if (needle.empty() || s.size() < needle.size()) return std::string_view::npos;
+        //iterate over all elements the element could possibly be
+        for (size_t i = start; i + needle.size() <= s.size(); ++i) {
+            //store if the string is ok so far (start by assuming it is found)
+            bool ok = true;
+            //check if the strings match
+            for (size_t j = 0; j < needle.size(); ++j) {
+                if (s[i + j] != needle[j]) { ok = false; break; }
+            }
+            //if the string is fully ok, return it
+            if (ok) 
+            {return i;}
+        }
+        //if the element was not found, return npos
+        return std::string_view::npos;
+    }
+
+    /**
+     * @brief Helper: constexpr find one of characters
+     * 
+     * @param s the string to search in
+     * @param chars a collection of string elements to find ONE from
+     * @param start the element to start the search at
+     * @return constexpr size_t the position of the found element or std::string_view::npos if it was not found
+     */
+    static consteval std::size_t cexpr_find_one_of(std::string_view s, const char* chars, std::size_t start = 0) noexcept {
+        //iterate over all elements to find it
+        for (std::size_t i = start; i < s.size(); ++i) {
+            //check for the symbols
+            for (const char* p = chars; *p; ++p) {
+                //if it is correct, return the position
+                if (s[i] == *p) return i;
+            }
+        }
+        //if the element is not found, return npos as error symbol
+        return std::string_view::npos;
+    }
+
+    /**
+     * @brief Helper: constexpr find last of characters
+     * 
+     * @param s the string to search in
+     * @param chars a collection of string elements to find ONE from
+     * @param start the element to start the search at
+     * @return consteval size_t the position of the found element or std::string_view::npos
+     */
+    static consteval size_t cexpr_find_last_of(std::string_view s, const char* chars, std::size_t start = std::string_view::npos) noexcept {
+        //sanity check if the string is filled
+        if (s.empty()) return std::string_view::npos;
+
+        //start from end if no start position given and the loop till the loop returns or till the start is hit
+        for (size_t i = (start == std::string_view::npos ? s.size() : start); i-- > 0; )
+        {
+            for (const char* p = chars; *p; ++p) {
+                if (s[i] == *p)
+                    return i;
+            }
+        }
+
+        //not found : return npos
+        return std::string_view::npos;
+    }
 
     /**
      * @brief compute the hash for a specific type
@@ -108,46 +243,36 @@ private:
      */
     template <typename T>
     static consteval uint64_t typeHash() noexcept {
-    #if defined(_MSC_VER)
-        constexpr std::string_view name = __FUNCSIG__;
-    #elif defined(__clang__) || defined(__GNUC__)
-        constexpr std::string_view name = __PRETTY_FUNCTION__;
-    #else
-        //error - unsupported compiler
-        #error "Unsupported compiler. Please inform the maintainer of GLGE to add the required compiler"
-    #endif
-        // FNV-1a 64-bit hash
+        //get the type name
+        constexpr std::string_view name = type_name<T>();
+        //FNV-1a 64-bit hash
         uint64_t hash = 1469598103934665603ull;
         for (unsigned char c : name)
             hash = (hash ^ c) * 1099511628211ull;
         return hash;
     }
 
-    //sanity check the hash function
-    static_assert(typeHash<int>() != typeHash<float>(), "Invalid hashing. Please check your compiler settings.");
-
     /**
-     * @brief register a type
+     * @brief fold a 64 bit hash down to a 32 bit value
      * 
-     * @tparam T the type to register
-     * @return consteval AssetTypeID the type id registered to this type
+     * @param hash the hash to fold down
+     * @return constexpr AssetTypeID the 32 bit result
      */
-    template <typename T>
-    static consteval AssetTypeID registerType() noexcept {
-        //compute the hash
-        constexpr uint64_t hash = typeHash<T>();
-        AssetTypeID id = next_ID++;
-        //insert the entry to the table
-        table.insert(hash, id);
-        return id;
+    static consteval AssetTypeID fold64to32(uint64_t hash) noexcept {
+        //fold down to reduce the likelihood of a collision
+        hash ^= hash >> 33;
+        hash *= 0xff51afd7ed558ccdULL;
+        hash ^= hash >> 33;
+        hash *= 0xc4ceb9fe1a85ec53ULL;
+        hash ^= hash >> 33;
+        return static_cast<AssetTypeID>(hash & std::numeric_limits<AssetTypeID>::max());
     }
 
-    //store the hash table of type hashs to type IDs
-    inline static constexpr Constexpr_HashMap<uint64_t, AssetTypeID, MAX_TYPES> table{};
-    //store the next id that will be used
-    inline static constexpr AssetTypeID next_ID = 0;
-
 };
+
+//sanity check the hash function
+static_assert(AssetTypeRegistry::getHash<int>() != AssetTypeRegistry::getHash<float>(), "Invalid hashing. Please check your compiler settings.");
+static_assert(AssetTypeRegistry::getID<int>() != AssetTypeRegistry::getID<float>(), "Invalid hashing that results in problems during folding. Please check your compiler settings.");
 
 #endif
 

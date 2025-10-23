@@ -107,7 +107,7 @@ public:
                     const std::size_t start = pos + marker1.size();
                     //usually ends with ']' or ';' depending on compiler context, check common terminators
                     //make sure not to check for > or , as they may appear in templated type names
-                    const char terminators[] = "];";
+                    constexpr const char terminators[] = "];";
                     const std::size_t end = cexpr_find_one_of(pf, terminators, start);
                     //sanity check
                     if (end != std::string_view::npos && end > start)

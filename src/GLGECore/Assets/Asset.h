@@ -118,11 +118,10 @@ public:
         const std::size_t lt = cexpr_find(pf, "<");
         if (lt != std::string_view::npos) {
             const std::size_t gt = cexpr_find(pf, ">", lt + 1);
-            // additional sanity: make sure there's a '(' soon after '>'
             const std::size_t paren = cexpr_find(pf, "(", gt);
-            if (gt != std::string_view::npos && gt > lt + 1 && paren != std::string_view::npos) {
-                return pf.substr(lt + 1, gt - (lt + 1));
-            }
+            // sanity check: ensure proper ordering
+            if (gt != std::string_view::npos && gt > lt + 1 && paren != std::string_view::npos)
+            {return pf.substr(lt + 1, gt - (lt + 1));}
         }
 
         //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('

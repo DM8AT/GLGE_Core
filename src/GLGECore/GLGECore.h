@@ -25,5 +25,7 @@
 #include "Filesystem/Filesystem.h"
 //include the geometry
 #include "Geometry/Geometry.h"
+//include the asset system
+#include "Assets/Assets.h"
 
 #endif

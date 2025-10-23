@@ -113,17 +113,8 @@ public:
             return pf.substr(start);
         }
 
-        //2) MSVC uses the form "... raw_func_name<int>(... )" so find < ... >
-        //and extract the type name in between
-        const std::size_t lt = cexpr_find(pf, "<");
-        if (lt != std::string_view::npos) {
-            const std::size_t gt = cexpr_find(pf, ">", lt + 1);
-            const std::size_t paren = cexpr_find(pf, "(", gt);
-            // sanity check: ensure proper ordering
-            if (gt != std::string_view::npos && gt > lt + 1 && paren != std::string_view::npos)
-            {return pf.substr(lt + 1, gt - (lt + 1));}
-        }
-
+        //2) Just ignore MSVC, it is not easy to implement
+        
         //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('
         //This is less robust; final fallback returns entire pretty function string.
         return pf;

@@ -117,20 +117,12 @@ public:
         //and extract the type name in between
         const std::size_t lt = cexpr_find(pf, "<");
         if (lt != std::string_view::npos) {
-            //handle nested templates by finding the *matching* '>'
-            std::size_t depth = 0;
-            std::size_t gt = std::string_view::npos;
-            for (std::size_t i = lt + 1; i < pf.size(); ++i) {
-                const char c = pf[i];
-                if (c == '<') ++depth;
-                else if (c == '>') {
-                    if (depth == 0) { gt = i; break; }
-                    else --depth;
-                }
+            const std::size_t gt = cexpr_find(pf, ">", lt + 1);
+            // additional sanity: make sure there's a '(' soon after '>'
+            const std::size_t paren = cexpr_find(pf, "(", gt);
+            if (gt != std::string_view::npos && gt > lt + 1 && paren != std::string_view::npos) {
+                return pf.substr(lt + 1, gt - (lt + 1));
             }
-            //make sure that the positions are all sane
-            if (gt != std::string_view::npos && gt > lt + 1)
-            {return pf.substr(lt + 1, gt - (lt + 1));}
         }
 
         //3) fallback: try to extract after function name by finding "typeHash" then a ' ' or '('
@@ -151,7 +143,6 @@ private:
         //return the correct string depending on the compiler
         //throw an error if the compiler is not supported
         #if defined(_MSC_VER)
-            #pragma message __FUNCSIG__
             return __FUNCSIG__;
         #elif defined(__clang__) || defined(__GNUC__)
             return __PRETTY_FUNCTION__;

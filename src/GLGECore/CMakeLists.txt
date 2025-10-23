@@ -56,7 +56,7 @@ endif()
 
 # C++20 and versioning
 set_target_properties(GLGE_CORE PROPERTIES 
-    CXX_STANDARD 20 
+    CXX_STANDARD 23 
     CXX_STANDARD_REQUIRED ON 
     VERSION ${GLGE_CORE_VERSION} 
     SOVERSION 1

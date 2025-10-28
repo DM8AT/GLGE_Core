@@ -13,3 +13,6 @@
 [submodule "Mustache"]
 	path = src/GLGECore/external/mustache
 	url = https://github.com/kirillochnev/mustache.git
+[submodule "src/GLGECore/external/assimp"]
+	path = src/GLGECore/external/assimp
+	url = https://github.com/assimp/assimp.git

@@ -15,5 +15,9 @@
 
 //include the asset stuff
 #include "Asset.h"
+//also add the asset manager
+#include "AssetManager.h"
+//add the asset streaming system
+#include "AssetStream.h"
 
 #endif

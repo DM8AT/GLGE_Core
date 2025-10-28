@@ -30,6 +30,10 @@ set(GLGE_CORE_SRC
 
     Geometry/Structure/Transform.cpp
     Geometry/Structure/ECS/Scene.cpp
+
+    Assets/Asset.cpp
+    Assets/AssetManager.cpp
+    Assets/AssetStream.cpp
 )
 
 add_library(GLGE_CORE ${GLGE_CORE_SRC})

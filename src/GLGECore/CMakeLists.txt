@@ -90,6 +90,7 @@ if (NOT MSVC)
     target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
     target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/zlib)
 endif()
+target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external)
 
 ## Add OpenSSL
 find_package(OpenSSL QUIET)

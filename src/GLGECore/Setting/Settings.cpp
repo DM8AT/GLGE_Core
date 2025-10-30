@@ -10,7 +10,7 @@
  */
 
 //include pugixml for XML
-#include "../../external/pugixml/src/pugixml.hpp"
+#include "pugixml.hpp"
 //include the setting API
 #include "Settings.h"
 //include GLGE error handling

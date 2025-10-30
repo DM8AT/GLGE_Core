@@ -13,7 +13,7 @@
 #include "Compression.h"
 
 //include zlib
-#include "../../external/zlib/zlib.h"
+#include "zlib/zlib.h"
 //add math for ceil
 #include <cmath>
 //for minimum and maximum

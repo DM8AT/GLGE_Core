@@ -82,11 +82,15 @@ target_link_libraries(GLGE_CORE PRIVATE pugixml)
 target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/pugixml/src)
 
 ## Zlib
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
-set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
-add_subdirectory(${PROJECT_SOURCE_DIR}/external/zlib ${PROJECT_BINARY_DIR}/external/zlib)
-target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
-target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/zlib)
+# only build NOT for windows (that is added through assimp)
+if (NOT MSVC)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
+    set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/zlib ${PROJECT_BINARY_DIR}/external/zlib)
+    target_link_libraries(GLGE_CORE PRIVATE zlibstatic)
+    target_link_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/zlib)
+endif()
+
 ## Add OpenSSL
 find_package(OpenSSL QUIET)
 if (OpenSSL_FOUND)
@@ -107,6 +111,7 @@ target_link_libraries(GLGE_CORE PUBLIC mustache)
 ## Assimp mesh loading system
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "If the test suite for Assimp is built in addition to the library.")
 set(ASSIMP_INSTALL OFF CACHE BOOL "Disable this if you want to use assimp as a submodule.")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build package with shared libraries.")
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/assimp ${PROJECT_BINARY_DIR}/external/assimp)
 target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/assimp/include)
 target_link_libraries(GLGE_CORE PUBLIC assimp)

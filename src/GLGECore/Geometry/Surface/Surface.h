@@ -17,6 +17,8 @@
 #include "Vertex.h"
 //include meshes
 #include "Mesh.h"
+//include mesh assets
+#include "MeshAsset.h"
 //include triangles
 #include "Triangle.h"
 

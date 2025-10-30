@@ -26,6 +26,7 @@ set(GLGE_CORE_SRC
 
     Geometry/Surface/VertexLayout.cpp
     Geometry/Surface/Mesh.cpp
+    Geometry/Surface/MeshAsset.cpp
     Geometry/Surface/Triangle.cpp
 
     Geometry/Structure/Transform.cpp
@@ -102,3 +103,10 @@ set(MUSTACHE_WARNINGS_AS_ERROR OFF CACHE BOOL "Disable -Werror in mustache submo
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/mustache ${PROJECT_BINARY_DIR}/external/mustache)
 target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/mustache/src)
 target_link_libraries(GLGE_CORE PUBLIC mustache)
+
+## Assimp mesh loading system
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "If the test suite for Assimp is built in addition to the library.")
+set(ASSIMP_INSTALL OFF CACHE BOOL "Disable this if you want to use assimp as a submodule.")
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/assimp ${PROJECT_BINARY_DIR}/external/assimp)
+target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/assimp/include)
+target_link_libraries(GLGE_CORE PUBLIC assimp)

@@ -59,7 +59,7 @@ if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 endif()
 
-# C++20 and versioning
+# C++23 and versioning
 set_target_properties(GLGE_CORE PROPERTIES 
     CXX_STANDARD 23 
     CXX_STANDARD_REQUIRED ON 

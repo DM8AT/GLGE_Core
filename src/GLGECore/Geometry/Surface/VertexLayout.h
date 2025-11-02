@@ -138,6 +138,37 @@ typedef struct s_VertexLayout {
         return offs;
     }
 
+    /**
+     * @brief Comparison operator to check equality between two vertex layouts
+     * 
+     * @param other the other VertexLayout to compare against
+     * @return true if the layouts are equal, false otherwise
+     */
+    inline constexpr bool operator==(const s_VertexLayout& other) const noexcept {
+        //early out if the size is invalid
+        if (m_size != other.m_size) {return false;}
+
+        //compare the elements array
+        for (uint64_t i = 0; i < VERTEX_ELEMENT_TYPE_COUNT; ++i) {
+            if (m_elements[i] != other.m_elements[i]) {
+                return false;
+            }
+        }
+
+        //success
+        return true;
+    }
+
+    /**
+     * @brief Comparison operator to check inequality between two vertex layouts
+     * 
+     * @param other the other VertexLayout to compare against
+     * @return true if the layouts are different, false otherwise
+     */
+    inline constexpr bool operator!=(const s_VertexLayout& other) const noexcept {
+        return !(*this == other);
+    }
+
     #endif
 
     //store a mapping from an index to a vertex element

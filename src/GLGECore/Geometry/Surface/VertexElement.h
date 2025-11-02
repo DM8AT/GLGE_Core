@@ -193,6 +193,16 @@ typedef struct s_VertexElement {
      : type(_type), data(_data)
     {}
 
+    /**
+     * @brief check if two vertex elements are the same
+     * 
+     * @param other the vertex element to check agains
+     * @return true : they are the same
+     * @return false : they are not the same
+     */
+    inline constexpr bool operator==(const s_VertexElement& other) const noexcept 
+    {return (type == other.type) && (data == other.data);}
+
     #endif
 
 } VertexElement;

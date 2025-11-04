@@ -1,0 +1,12 @@
+[submodule "external/mustache"]
+	path = external/mustache
+	url = https://github.com/kirillochnev/mustache.git
+[submodule "external/pugixml"]
+	path = external/pugixml
+	url = https://github.com/zeux/pugixml.git
+[submodule "external/assimp"]
+	path = external/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "external/zlib"]
+	path = external/zlib
+	url = https://github.com/madler/zlib.git

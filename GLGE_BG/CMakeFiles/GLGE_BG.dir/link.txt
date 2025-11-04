@@ -1,0 +1,2 @@
+/usr/bin/ccache /usr/bin/ar qc libGLGE_BGd.a CMakeFiles/GLGE_BG.dir/CBinding/Vector.cpp.o CMakeFiles/GLGE_BG.dir/CBinding/Mutex.cpp.o CMakeFiles/GLGE_BG.dir/CBinding/Thread.cpp.o CMakeFiles/GLGE_BG.dir/CBinding/String.cpp.o CMakeFiles/GLGE_BG.dir/SystemInfo/SystemInfo.cpp.o CMakeFiles/GLGE_BG.dir/Debugging/Logging/Logger.cpp.o CMakeFiles/GLGE_BG.dir/Debugging/Timing/Timer.cpp.o CMakeFiles/GLGE_BG.dir/Debugging/Timing/ScopeTimer.cpp.o
+/usr/bin/ccache /usr/bin/ranlib libGLGE_BGd.a

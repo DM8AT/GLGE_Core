@@ -1,0 +1,1 @@
+set(MUSTACHE_WARNINGS "/WX")

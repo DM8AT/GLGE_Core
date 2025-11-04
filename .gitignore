@@ -1,8 +1,0 @@
-# ignore build stuff
-build*
-# ignore vs code settings
-.vscode
-# ignore GLGE app files
-*.gapp
-# Ignore OpenSSL
-src/external/openssl

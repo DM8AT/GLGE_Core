@@ -189,8 +189,8 @@ String MeshAsset::import(const String& path, const String& suffix) noexcept
         if (mesh->HasNormals())
         {vert.normal = *((vec3*)&mesh->mNormals[i]);}
         //only use the texture coordinate at index 0
-        if (mesh->HasTextureCoords(i))
-        {vert.tex = *((vec2*)&mesh->mTextureCoords[i][0]);}
+        if (mesh->HasTextureCoords(0))
+        {vert.tex = *((vec2*)&(mesh->mTextureCoords[0][i]));}
         //store the new vertex
         verts.push_back(vert);
     }

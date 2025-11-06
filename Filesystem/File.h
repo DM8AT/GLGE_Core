@@ -49,7 +49,7 @@ public:
      * @param path the path to the file to open / read from
      * @param allowCreate true : if the file does not exist, it will be created (if possible) | false : if the file does not exist, it won't be created. 
      */
-    File(const std::filesystem::path& path, bool allowCreate, const std::vector<FileDecorator>& decorators = {})
+    File(const std::filesystem::path& path, bool allowCreate = false, const std::vector<FileDecorator>& decorators = {})
      : m_decorators(decorators)
     {open(path, allowCreate);}
 

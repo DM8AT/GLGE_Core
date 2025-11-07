@@ -164,7 +164,7 @@ String MeshAsset::import(const String& path, const String& suffix) noexcept
     //if there are no meshes, stop
     if (scene->mNumMeshes == 0) {return "";}
 
-    GLGE_DEBUG_MESSAGE("Successfully loaded \"" << path << "\" for importing");
+    GLGE_DEBUG_MESSAGE("Successfully imported mesh from \"" << path << "\"");
     //check if there are more than one meshes
     //this is a mesh asset. There should be only one. 
     #if GLGE_BG_DEBUG

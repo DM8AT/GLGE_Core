@@ -202,6 +202,40 @@ public:
     void deleteObject(Object object) noexcept;
 
     /**
+     * @brief get a pointer to the requested component or NULL if the object does not have the requested component
+     * 
+     * @tparam Component the type of component to quarry
+     * @param obj the object to quarry the component from
+     * @return Component* a pointer to the component or NULL if it doesn't exist
+     */
+    template <typename Component>
+    inline Component* get(const Object& obj) noexcept 
+    {return m_world.entities().getComponent<Component>(*((mustache::Entity*)&obj->entity));}
+
+    /**
+     * @brief initialize a component in place for an object
+     * 
+     * @tparam Component the type of component to initialize
+     * @tparam Args the argument types for the component constructor
+     * @param obj the object to initialize the component for
+     * @param args the arguments to pass to the component constructor
+     * @return true : the object has the component
+     * @return false : the object does not have the component
+     */
+    template <typename Component, typename ...Args>
+    inline bool initialize(const Object& obj, Args... args) noexcept {
+        //get the address of the component for the object
+        Component* comp = get<Component>(obj);
+        //if the component exists, call the constructor, else return false
+        if (comp) {
+            new (comp) Component(std::forward<Args>(args) ...);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @brief check if an object with the name exists
      * 
      * @param name the name to check
@@ -248,7 +282,7 @@ public:
         //get all entities of the type
         for (auto it = m_objects.begin(); it != m_objects.end(); ++it) {
             if (Component* comp = m_world.entities().getComponent<Component>(*((mustache::Entity*)&it->second.entity))) {
-                out.emplace_back(&it->second, comp);
+                out.emplace_back((const ObjectWrapper*)&it->second, comp);
             }
         }
         //remove not needed space and return

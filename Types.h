@@ -66,4 +66,7 @@ typedef unsigned char uchar;
     typedef uint16_t half;
 #endif
 
+//a simple utility define used for quick, cross-platform access to NAN
+#define GLGE_NAN_F ((union { uint32_t i; float f; }){.i=0x7F000000u }.f)
+
 #endif

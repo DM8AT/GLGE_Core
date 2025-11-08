@@ -119,6 +119,7 @@ public:
         m_objects.emplace(name, RawObject{
             .name = name,
             .entity = *((uint64_t*)&ent),
+            .scene = this,
             .parent = par,
             .children{}
         });
@@ -182,6 +183,7 @@ public:
             m_objects.emplace(name, RawObject{
                 .name = name,
                 .entity = *((uint64_t*)&ent),
+                .scene = this,
                 .parent = par,
                 .children{}
             });
@@ -236,6 +238,39 @@ public:
     }
 
     /**
+     * @brief a simple utility function to check if a object has a specific component
+     * 
+     * @tparam Component the component to check for
+     * @param obj the object to check
+     * @return true : the object has the requested component
+     * @return false : the object does not have the requested component
+     */
+    template <typename Component>
+    inline bool has(const Object& obj) noexcept 
+    {return m_world.entities().hasComponent<Component>(*((mustache::Entity*)&obj->entity));}
+
+    /**
+     * @brief assign the value of an component or add it if the component does not exist on the object
+     * 
+     * @tparam Component the component to assign or add
+     * @tparam Args the arguments to parse to the assign / construction
+     * @param obj the object to assign / add the object on
+     * @param args the arguments to parse to the assign / construction
+     */
+    template <typename Component, typename ...Args>
+    inline void assignOrAdd(const Object& obj, Args... args) noexcept
+    {m_world.entities().assignUnique<Component>(*((mustache::Entity*)&obj->entity), std::forward<Args>(args)...);}
+
+    /**
+     * @brief remove a component from an object
+     * 
+     * @tparam Component the component to remove from the object
+     * @param obj the object to remove the component from
+     */
+    template <typename Component> inline void remove(const Object& obj) noexcept
+    {m_world.entities().removeComponent<Component>(*((mustache::Entity*)&obj->entity));}
+
+    /**
      * @brief check if an object with the name exists
      * 
      * @param name the name to check
@@ -282,7 +317,7 @@ public:
         //get all entities of the type
         for (auto it = m_objects.begin(); it != m_objects.end(); ++it) {
             if (Component* comp = m_world.entities().getComponent<Component>(*((mustache::Entity*)&it->second.entity))) {
-                out.emplace_back((const ObjectWrapper*)&it->second, comp);
+                out.emplace_back((Object)&it->second, comp);
             }
         }
         //remove not needed space and return
@@ -398,6 +433,18 @@ protected:
     std::unordered_map<const char*, ISystem*> m_systems;
 
 };
+
+//implement the interface for the object
+template <typename Component> Component* ObjectWrapper::get() noexcept 
+    {return ((Scene*)scene)->get<Component>(this);}
+template <typename Component, typename ...Args> inline bool ObjectWrapper::initialize(Args... args) noexcept 
+    {return ((Scene*)scene)->initialize<Component>(this, std::forward<Args>(args)...);}
+template <typename Component> inline bool ObjectWrapper::has() noexcept 
+    {return ((Scene*)scene)->has<Component>(this);}
+template <typename Component, typename ...Args> inline void ObjectWrapper::assignOrAdd(Args... args) noexcept
+    {((Scene*)scene)->assignOrAdd<Component>(this, std::forward<Args>(args)...);}
+template <typename Component> inline void ObjectWrapper::remove() noexcept
+    {((Scene*)scene)->remove<Component>(this);}
 
 #endif
 

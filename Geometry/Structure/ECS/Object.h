@@ -28,6 +28,9 @@
     //add the input/output system
     #include <iostream>
 
+    //scenes will be defined later
+    class Scene;
+
     /**
      * @brief store what a raw object actually is (opaque for most of the time)
      */
@@ -36,6 +39,8 @@
         std::string name = "INVALID";
         //the identifier of the object's entity
         uint64_t entity = UINT64_MAX;
+        //store a pointer to the scene the object belongs to
+        Scene* scene = nullptr;
         //store a pointer to the parent (NULL = this is root)
         RawObject* parent = NULL;
         //store a vector of object pointers to the children
@@ -93,14 +98,67 @@ typedef struct s_ObjectWrapper {
     String name;
     //opaque entity type
     uint64_t entity;
+    //store a pointer to the scene the object belongs to
+    void* scene;
     //parent pointer
     void* parent;
     //opaque padding
     byte padding[24];
+
+
+    //for C++ add helper functions
+    #if __cplusplus
+
+    /**
+     * @brief access a specific component of the object
+     * 
+     * @tparam Component the type of component to get
+     * @return Component* a pointer to the component or NULL if the component does not exist
+     */
+    template <typename Component> inline Component* get() noexcept;
+
+    /**
+     * @brief initialize a component of the object
+     * 
+     * @tparam Component the component to initialize
+     * @tparam Args the types of arguments to parse to the constructor
+     * @param args the actual arguments to parse to the constructor
+     * @return true : the initialization was called
+     * @return false : the requested component is not attached to the object
+     */
+    template <typename Component, typename ...Args> inline bool initialize(Args... args) noexcept;
+
+    /**
+     * @brief check if this object has a specific component
+     * 
+     * @tparam Component the component to check
+     * @return true : this object has the requested component
+     * @return false : this object does NOT have the requested component
+     */
+    template <typename Component> inline bool has() noexcept;
+
+    /**
+     * @brief assign the value of a component or add the component if it doesn't exist
+     * 
+     * @tparam Component the component to assign or create
+     * @tparam Args the arguments to parse to the constructor / assignment
+     * @param args the arguments to parse to the constructor / assignment
+     */
+    template <typename Component, typename ...Args> inline void assignOrAdd(Args... args) noexcept;
+
+    /**
+     * @brief remove a component from this object
+     * 
+     * @tparam Component the component to remove
+     */
+    template <typename Component> inline void remove() noexcept;
+
+    #endif
+
 } ObjectWrapper;
 
 //define what an object actually is
-typedef const ObjectWrapper* Object;
+typedef ObjectWrapper* Object;
 
 //for C++ add a print operator to the object
 #if __cplusplus

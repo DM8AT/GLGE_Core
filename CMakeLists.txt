@@ -49,11 +49,6 @@ target_compile_options(GLGE_CORE PRIVATE
 # set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall")
 # set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wconversion -Wsign-conversion -Wshadow -Wdouble-promotion -Wformat=2 -Wnull-dereference -Wundef -Wcast-align -Wmissing-declarations -Wunreachable-code -Winit-self -Wlogical-op")
 
-# Default build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
-endif()
-
 # MSVC runtime
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
@@ -110,9 +105,10 @@ target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/musta
 target_link_libraries(GLGE_CORE PUBLIC mustache)
 
 ## Assimp mesh loading system
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "If the test suite for Assimp is built in addition to the library.")
-set(ASSIMP_INSTALL OFF CACHE BOOL "Disable this if you want to use assimp as a submodule.")
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build package with shared libraries.")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "")
+set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/assimp ${PROJECT_BINARY_DIR}/external/assimp)
-target_include_directories(GLGE_CORE PUBLIC ${PROJECT_SOURCE_DIR}/external/assimp/include)
-target_link_libraries(GLGE_CORE PUBLIC assimp)
+target_include_directories(GLGE_CORE PRIVATE ${PROJECT_SOURCE_DIR}/external/assimp/include)
+target_link_libraries(GLGE_CORE PRIVATE assimp)

@@ -30,7 +30,7 @@ void AssetJobRegistry::initialize() noexcept
     m_freeList.reserve(m_jobs.capacity());
 
     //create all the threads
-    m_threadPool.resize(std::ceil(std::thread::hardware_concurrency() * 0.33333f));
+    m_threadPool.resize((std::thread::hardware_concurrency() / 3) + 1);
     for (auto& t : m_threadPool) 
     {t = std::thread(worker_ThreadFunction);}
 }

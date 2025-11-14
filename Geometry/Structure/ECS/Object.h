@@ -129,6 +129,17 @@ typedef struct s_ObjectWrapper {
     template <typename Component, typename ...Args> inline bool initialize(Args... args) noexcept;
 
     /**
+     * @brief add a component to the object
+     * 
+     * @tparam Component the component to add
+     * @tparam Args the types of arguments to parse to the constructor
+     * @param args the actual arguments to parse to the constructor
+     * @return true : the component was added successfully
+     * @return false : the requested component is allready attached to the object
+     */
+    template <typename Component, typename ...Args> inline bool add(Args... args) noexcept;
+
+    /**
      * @brief check if this object has a specific component
      * 
      * @tparam Component the component to check
@@ -136,15 +147,6 @@ typedef struct s_ObjectWrapper {
      * @return false : this object does NOT have the requested component
      */
     template <typename Component> inline bool has() noexcept;
-
-    /**
-     * @brief assign the value of a component or add the component if it doesn't exist
-     * 
-     * @tparam Component the component to assign or create
-     * @tparam Args the arguments to parse to the constructor / assignment
-     * @param args the arguments to parse to the constructor / assignment
-     */
-    template <typename Component, typename ...Args> inline void assignOrAdd(Args... args) noexcept;
 
     /**
      * @brief remove a component from this object

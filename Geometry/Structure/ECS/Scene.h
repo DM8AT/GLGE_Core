@@ -32,10 +32,36 @@
 //systems will be defined later
 class ISystem;
 
+//use a namespace for GLGE concepts
+namespace GLGE::Concept {
+
+    //use a concept to check if a type has a "setObject" function that takes in an object
+    template <typename T>
+    concept HasSetObject = requires(T& t, Object obj) {
+        { t.setObject(obj) } -> std::same_as<void>;
+    };
+
+};
+
 /**
  * @brief a scene has a collection of objects. The only object possessed by the scene directly is the root object (fully empty object, no entity)
  */
 class Scene {
+protected:
+
+    /**
+     * @brief a function that calls the setObject method only if a component has it
+     * 
+     * @tparam T the component to call the method for
+     * @param obj the object to call the component for
+     */
+    template <typename T>
+    void callSetObjectIfExists(RawObject* obj) noexcept {
+        if constexpr (GLGE::Concept::HasSetObject<T>) {
+            m_world.entities().getComponent<T>(*((mustache::Entity*)&obj->entity))->setObject((Object)obj);
+        } 
+    }
+
 public:
 
     /**
@@ -87,10 +113,11 @@ public:
      * 
      * @tparam Components a list of components to add to the entity. Every entity has at least an String storing the object's name
      * @param nameSuggestion the name SUGGESTION for the object
+     * @param transform the initial transformation of the object
      * @param parent a pointer to the parent or NULL if the root should be used
      * @return Object* a pointer to the new object
      */
-    template <typename ...Components> inline Object createObject(const String& nameSuggestion, Object parent = NULL) noexcept {
+    template <typename ...Components> inline Object createObject(const String& nameSuggestion, Transform transform = Transform(), Object parent = NULL) noexcept {
         //check if the name exists. If it does, get a number to add to the end to make it unique
         String name = nameSuggestion;
         if (m_objects.find(name) != m_objects.end())
@@ -114,6 +141,7 @@ public:
         //store the object and add it to the internal world
         mustache::Entity ent = m_world.entities().create<String, Transform, Components...>();
         *(m_world.entities().getComponent<String>(ent)) = name;
+        *(m_world.entities().getComponent<Transform>(ent)) = transform;
         //add the new object to the object mapping and parent
         RawObject* par = (RawObject*)((parent) ? ((RawObject*)parent) : &m_root);
         m_objects.emplace(name, RawObject{
@@ -125,6 +153,8 @@ public:
         });
         RawObject* newObj = &m_objects[name];
         par->children.push_back(newObj);
+        //call the set object method for all components
+        (callSetObjectIfExists<Components>(newObj), ...);
         //return a pointer to the new object
         return ((Object)newObj);
     }
@@ -190,8 +220,9 @@ public:
             RawObject* newObj = &m_objects[name];
             par->children.push_back(newObj);
             ret.emplace_back((Object)newObj);
+            //call the set object method for all components
+            (callSetObjectIfExists<Components>(newObj), ...);
         }
-
         //return the objects
         return ret;
     }
@@ -230,7 +261,36 @@ public:
         Component* comp = get<Component>(obj);
         //if the component exists, call the constructor, else return false
         if (comp) {
+            //add the component
             new (comp) Component(std::forward<Args>(args) ...);
+            //if it exists, set the object for the component
+            callSetObjectIfExists<Component>(*((RawObject**)&obj));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief add a component to an object
+     * 
+     * @tparam Component the type of component to add
+     * @tparam Args the argument types for the component constructor
+     * @param obj the object to add the component to
+     * @param args the arguments to pass to the component constructor
+     * @return true : the component was added successfully
+     * @return false : the object has the component allready
+     */
+    template <typename Component, typename ...Args>
+    inline bool add(const Object& obj, Args... args) noexcept {
+        //get the address of the component for the object
+        Component* comp = get<Component>(obj);
+        //if the component exists, call the constructor, else return false
+        if (!comp) {
+            //add the component
+            m_world.entities().assignUnique<Component>(*((mustache::Entity*)&obj->entity), std::forward<Args>(args)...);
+            //if it exists, set the object for the component
+            callSetObjectIfExists<Component>(*((RawObject**)&obj));
             return true;
         } else {
             return false;
@@ -248,18 +308,6 @@ public:
     template <typename Component>
     inline bool has(const Object& obj) noexcept 
     {return m_world.entities().hasComponent<Component>(*((mustache::Entity*)&obj->entity));}
-
-    /**
-     * @brief assign the value of an component or add it if the component does not exist on the object
-     * 
-     * @tparam Component the component to assign or add
-     * @tparam Args the arguments to parse to the assign / construction
-     * @param obj the object to assign / add the object on
-     * @param args the arguments to parse to the assign / construction
-     */
-    template <typename Component, typename ...Args>
-    inline void assignOrAdd(const Object& obj, Args... args) noexcept
-    {m_world.entities().assignUnique<Component>(*((mustache::Entity*)&obj->entity), std::forward<Args>(args)...);}
 
     /**
      * @brief remove a component from an object
@@ -439,10 +487,10 @@ template <typename Component> Component* ObjectWrapper::get() noexcept
     {return ((Scene*)scene)->get<Component>(this);}
 template <typename Component, typename ...Args> inline bool ObjectWrapper::initialize(Args... args) noexcept 
     {return ((Scene*)scene)->initialize<Component>(this, std::forward<Args>(args)...);}
+template <typename Component, typename ...Args> inline bool ObjectWrapper::add(Args... args) noexcept
+    {return ((Scene*)scene)->add<Component>(this, std::forward<Args>(args)...);}
 template <typename Component> inline bool ObjectWrapper::has() noexcept 
     {return ((Scene*)scene)->has<Component>(this);}
-template <typename Component, typename ...Args> inline void ObjectWrapper::assignOrAdd(Args... args) noexcept
-    {((Scene*)scene)->assignOrAdd<Component>(this, std::forward<Args>(args)...);}
 template <typename Component> inline void ObjectWrapper::remove() noexcept
     {((Scene*)scene)->remove<Component>(this);}
 

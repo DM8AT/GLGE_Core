@@ -42,7 +42,7 @@ typedef struct s_Transform {
      * @param _rot the rotation of the transformation
      * @param _scale the scale of the transformation
      */
-    inline s_Transform(const vec3& _pos, const Quaternion& _rot, const vec3& _scale)
+    inline s_Transform(const vec3& _pos, const Quaternion& _rot = Quaternion(), const vec3& _scale = 1)
      : pos(_pos), rot(_rot), scale(_scale)
     {}
 

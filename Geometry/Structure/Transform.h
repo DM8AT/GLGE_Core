@@ -56,8 +56,8 @@ typedef struct s_Transform {
         //return a matrix to move the object around
         return mat4(
             1,0,0,pos.x,
-            1,0,0,pos.y,
-            1,0,0,pos.z,
+            0,1,0,pos.y,
+            0,0,1,pos.z,
             0,0,0,1
         );
     }

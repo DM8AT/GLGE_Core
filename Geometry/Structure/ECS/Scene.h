@@ -27,7 +27,7 @@
 #include <set>
 
 //mustache is the main ECS manager
-#include "mustache/ecs/ecs.hpp"
+#include "../../../external/mustache/src/mustache/ecs/ecs.hpp"
 
 //systems will be defined later
 class ISystem;
